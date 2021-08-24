@@ -8,8 +8,11 @@ import (
 func main() {
 	rdb := models.RedisInit()
 	mdb := models.MysqlInit()
-	defer mdb.Close()
+
+	models.RedisTest()
+
 	defer rdb.Close()
+	defer mdb.Close()
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
