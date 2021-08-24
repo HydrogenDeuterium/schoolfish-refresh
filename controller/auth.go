@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"schoolfish-refresh/models"
+	"schoolfish-refresh/service"
 )
 
 func Auth(g *gin.RouterGroup, db models.DBs) {
@@ -15,16 +17,16 @@ func Auth(g *gin.RouterGroup, db models.DBs) {
 		}
 
 		// 往redis存数据，自动定期失效
-		err := db.RedisSet(email)
+		err, code := db.RedisSet(email)
 		if err != nil {
 			returnInternal(c)
 			return
 		}
-		//err = service.SendMail(email, fmt.Sprintf("验证码为%s", code))
-		//if err != nil {
-		//	returnInternal(c, "邮件发送失败")
-		//	return
-		//}
+		err = service.Sendmail(email, fmt.Sprintf("验证码为%s", code))
+		if err != nil {
+			returnInternal(c)
+			return
+		}
 		returnGood(c, nil)
 	})
 }

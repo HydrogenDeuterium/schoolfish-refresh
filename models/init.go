@@ -39,13 +39,13 @@ func (dbs DBs) RedisGet(email string) string {
 	return ret
 }
 
-func (dbs DBs) RedisSet(k string) error {
+func (dbs DBs) RedisSet(k string) (error, string) {
 	v := getRandomString()
-	return dbs.redis.Set(k, v, 5*time.Minute).Err()
+	return dbs.redis.Set(k, v, 5*time.Minute).Err(), v
 
 }
 
-func getRandomString() interface{} {
+func getRandomString() string {
 	//六位随机数字
 	randBytes := make([]byte, 3)
 	_, _ = rand.Read(randBytes)
