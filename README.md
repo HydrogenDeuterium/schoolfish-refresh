@@ -22,5 +22,19 @@ restful api 是一套对于 api 的规范。本项目尽量实现以下规范:
     - POST: 新建
     - DELETE: 删除
     - PUT/PATCH: 修改
-    - 注意一个 url 不一定实现了所有的方法。
-    - 注意部分 api 不适用于 restful 的api设计，如用户管理
+    - 注意：
+      - 一个 url 不一定实现了所有的方法。
+      - 部分 api 不适用于 restful 的api设计，如用户管理
+
+### 请求规范
+
+- 请求示例:
+    - GET/DELETE api_URL?params1=val1&param2=val2
+    - POST/PUT/PATCH api_URL { body }
+
+- 数组数据的分页请求参数:
+    - page:  请求页码，从 1 开始。
+    - limit:  每一页数量。
+    - sort:  排序字段。
+    - order:  升序降序，“desc” 或 “asc”
+    - 注意: 并非所有返回数组的字段都实现了以上所有功能，这仅仅是规范的建议。
