@@ -2,6 +2,10 @@
 
 这是[原项目](https://github.com/HydrogenDeuterium/schoolfish)的重制版，弥补了之前犯下的一些错误，使得提交历史更加清晰明了，利于学习。本项目是毕业设计：闲鱼校园版的后端实现，基于 gin.go ，使用 redis+MySQL 作为数据库。
 
+参考项目:
+- [这个](https://gitee.com/zfkhhh/android-trading-platform) 
+- [这个](https://linlinjava.gitbook.io/litemall/)
+
 ## 技术选型
 
 gin 基于 golang，是一个轻便而敏捷的 web 框架，相比 SpringBoot 更加轻量级，并且具有更高的性能。SpringBoot 在拓展性和社区支持等方面有优势，但考虑到业务范围有限，加之考虑到 JAVA 在开发速率上的缺陷，放弃选用。
