@@ -1,9 +1,12 @@
 package models
 
 import (
+	"fmt"
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
+	"math/rand"
 	"os"
+	"time"
 )
 
 func redisInit() *redis.Client {
@@ -29,6 +32,24 @@ type DBs struct {
 func (dbs DBs) Close() {
 	_ = dbs.redis.Close()
 	_ = dbs.mysql.Close()
+}
+
+func (dbs DBs) RedisGet(email string) string {
+	ret, _ := dbs.redis.Get(email).Result()
+	return ret
+}
+
+func (dbs DBs) RedisSet(k string) error {
+	v := getRandomString()
+	return dbs.redis.Set(k, v, 5*time.Minute).Err()
+
+}
+
+func getRandomString() interface{} {
+	//六位随机数字
+	randBytes := make([]byte, 3)
+	_, _ = rand.Read(randBytes)
+	return fmt.Sprintf("%x", randBytes)
 }
 
 func DBInit() DBs {
