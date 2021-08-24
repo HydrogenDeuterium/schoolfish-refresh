@@ -17,12 +17,12 @@ func Auth(g *gin.RouterGroup, db models.DBs) {
 		}
 
 		// 往redis存数据，自动定期失效
-		err, code := db.RedisSet(email)
-		if err != nil {
+		code := db.RedisSet(email)
+		if code == "" {
 			returnInternal(c)
 			return
 		}
-		err = service.Sendmail(email, fmt.Sprintf("验证码为%s", code))
+		err := service.Sendmail(email, fmt.Sprintf("验证码为%s", code))
 		if err != nil {
 			returnInternal(c)
 			return

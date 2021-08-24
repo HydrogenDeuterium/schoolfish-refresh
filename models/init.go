@@ -39,9 +39,20 @@ func (dbs DBs) RedisGet(email string) string {
 	return ret
 }
 
-func (dbs DBs) RedisSet(k string) (error, string) {
-	v := getRandomString()
-	return dbs.redis.Set(k, v, 5*time.Minute).Err(), v
+func (dbs DBs) RedisSet(email string) string {
+	code := "123456"
+
+	//*测试用
+	if os.Getenv("test") != "True" {
+		code = getRandomString()
+	}
+	// 测试用*/
+
+	err := dbs.redis.Set(email, code, 5*time.Minute).Err()
+	if err != nil {
+		return ""
+	}
+	return code
 
 }
 

@@ -1,9 +1,14 @@
 package service
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func Sendmail(email, context string) error {
 	//暂时不急着实现
-	fmt.Println(email, context)
+	if os.Getenv("test") != "True" {
+		fmt.Println(email, context)
+	}
 	return nil
 }
