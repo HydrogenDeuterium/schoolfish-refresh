@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"schoolfish-refresh/controller"
 	"schoolfish-refresh/models"
 )
 
@@ -14,9 +15,5 @@ func main() {
 		_ = r.Run()
 	}(r) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	controller.Auth(r.Group("/auth"), DB)
 }
