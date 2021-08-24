@@ -139,6 +139,8 @@ Content-Type: application/json;charset=UTF-8
 
 ## 数据表设计
 
+使用 /transplant.sql 来导入数据表结构。
+
 - 公用部分：
   - create:datetime = CURRENT_TIMESTAMP
   - update:datetime = CURRENT_TIMESTAMP, refresh
