@@ -132,3 +132,41 @@ Content-Type: application/json;charset=UTF-8
 - /messages/:uid1/&users=uid2
   - GET: #获取与 uid2 的所有往来消息
   - POST: #向 uid2 发送消息
+
+## 数据表设计
+
+- 公用部分：
+  - create:datetime = CURRENT_TIMESTAMP
+  - update:datetime = CURRENT_TIMESTAMP, refresh
+  - delete:datetime = NULL
+- 用户表: user
+  - uid: uint, primary,index, inc
+  - name: varchar(16)
+  - email: varchar(255), unique
+  - hashed: char(64)
+  - avatar: varchar(255), null
+  - info: varchar(255), null
+  - profile: text, null
+  - location: varchar(255), null
+- 货物表: products
+  - pid: uint, primary, index, inc
+  - title: varchar(63)
+  - info: varchar(2047), null
+  - price: decimal(6, 2)
+  - owner: uint->user(uid)
+  - location: varchar(255), null
+- 评论表: comments
+  - cid: serial,primary
+  - product: int=produce(pid)
+  - commentator: uint->user.uid
+  - response_to: uint->comments.cid, null
+  - text: varchar(255)
+- 私信表: messages
+  - mid: uint, primary,index, inc
+  - from: uint->user.uid
+  - to: uint->user.uid
+  - text: varchar(255)
+- 图表：images
+  - iid: uint, primary,index, inc
+  - address: text, unique
+  - product: uint->product.pid
