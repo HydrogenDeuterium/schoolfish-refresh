@@ -77,3 +77,58 @@ Content-Type: application/json;charset=UTF-8
 
 为保证 api 不被滥用，通常 api 需要引入保护机制，例如 OAuth2。否则实际上一旦开发者知道服务器，就很容易访问 api，可能导致 api 被滥用。
 考虑到本项目仅仅是一个作业项目，并不长期运行，考虑到开发周期问题，不进行 api 保护，
+
+## api 清单
+
+以下列出了准备实际进行实现的 api 清单，供前端开发参考。
+其中，路径中带有”:“的，为路径（path）参数；
+路径中“?”后的部分，为查询（query）参数；
+带“#”的，要求 cookie 中有对应参数来识别用户登录；
+其他所有参数都存放在请求体（request body）中。
+
+### 认证相关
+
+- /auth
+  - GET: 获取登录验证码
+  - POST: 登录
+
+### 用户相关
+
+- /users
+  - POST: 注册
+- /users/: uid
+  - GET: #获取用户信息
+  - PUT: #修改信息
+
+### 货物相关
+
+- /product
+  - GET: 获取所有
+- /product/:pid
+  - GET: 获取信息
+  - PUT: #更新信息
+  - DELETE: #下架
+- /products/users/:uid
+  - GET: 获取所有
+  - POST: #上架
+
+### 评论相关
+
+- /comments/:cid
+  - GET: 获取
+  - PUT: #修改
+  - DELETE:#删除
+- /comments/:cid/response
+  - GET: 获取所有回复
+  - POST: #新增回复
+- /comments/product/:pid
+  - GET: 获取所有指定货物的评论
+  - POST: #新增评论
+
+### 私聊相关
+
+- /messages/:uid/users
+  - GET: #获取往来用户
+- /messages/:uid1/&users=uid2
+  - GET: #获取与 uid2 的所有往来消息
+  - POST: #向 uid2 发送消息
