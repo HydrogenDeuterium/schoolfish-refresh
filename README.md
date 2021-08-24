@@ -38,3 +38,24 @@ restful api 是一套对于 api 的规范。本项目尽量实现以下规范:
     - sort:  排序字段。
     - order:  升序降序，“desc” 或 “asc”
     - 注意: 并非所有返回数组的字段都实现了以上所有功能，这仅仅是规范的建议。
+
+### 响应规范
+
+响应格式如下:
+
+```http request
+Content-Type: application/json;charset=UTF-8
+
+{
+    code: int
+    data: object|array|null
+    msg: string
+}
+```
+
+- 成功响应: `{code: 200,data: xxx,msg: ""}`
+  - 说明响应成功（废话）。
+- 失败响应: `{code: 400,data: null,msg: "xxx"}`
+  - 说明前端传入的数据不合适，数量不足或不符合后端要求。
+- 内部错误响应: `{code: 500,data: null,msg: ""}`
+  - 内部错误，说明后端出现了考虑到但没有解决的问题。
