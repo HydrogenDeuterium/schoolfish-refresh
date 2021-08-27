@@ -26,12 +26,12 @@ func mysqlInit() *gorm.DB {
 
 type DBs struct {
 	redis *redis.Client
-	mysql *gorm.DB
+	Mysql *gorm.DB
 }
 
 func (dbs DBs) Close() {
 	_ = dbs.redis.Close()
-	_ = dbs.mysql.Close()
+	_ = dbs.Mysql.Close()
 }
 
 func (dbs DBs) RedisGet(email string) string {

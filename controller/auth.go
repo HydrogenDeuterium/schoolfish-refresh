@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"schoolfish-refresh/models"
 	"schoolfish-refresh/service"
 )
@@ -41,5 +42,28 @@ func Auth(g *gin.RouterGroup, db models.DBs) {
 		}
 		db.RedisDel(email)
 		returnGood(c, nil)
+	})
+
+	g.POST("", func(c *gin.Context) {
+		email := c.PostForm("email")
+		pwd := c.PostForm("password")
+		code := c.Query("code")
+		if db.RedisGet(email) != code {
+			returnError(c, "验证码无效或已过期！")
+			return
+		}
+		var user *models.Users
+		db.Mysql.Where("email=?", email).Find(user)
+		if user == nil {
+			returnError(c, "用户不存在！")
+			return
+		}
+		if bcrypt.CompareHashAndPassword([]byte(user.Hashed), []byte(pwd)) != nil {
+			returnError(c, "用户名与密码不匹配！")
+			return
+		}
+		//TODO 实现计算token
+		token := "123456"
+		returnGood(c, token)
 	})
 }
