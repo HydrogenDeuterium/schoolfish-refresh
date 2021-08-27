@@ -56,6 +56,10 @@ func (dbs DBs) RedisSet(email string) string {
 
 }
 
+func (dbs DBs) RedisDel(email string) {
+	dbs.redis.Del(email)
+}
+
 func getRandomString() string {
 	//六位随机数字
 	randBytes := make([]byte, 3)
