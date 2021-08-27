@@ -95,6 +95,7 @@ Content-Type: application/json;charset=UTF-8
 - /auth
   - GET: 获取登录验证码
   - POST: 登录
+  - DELETE: 删除登录验证码
 
 ### 用户相关
 
