@@ -16,9 +16,19 @@ msg = 'msg'
 
 
 def test_getcode():
-    r = c.get("/auth", params={"email": "123@456"})
+    p = {"email": "123@456"}
+    c.delete("/auth", params=p)
+
+    r = c.get("/auth", params=p)
     assert r.status_code == 200
     j = r.json()
     assert j['code'] == 200
-    assert j['data'] == None
+    assert j['data'] is None
+    assert isinstance(j['msg'], str)
+
+    r = c.get("/auth", params=p)
+    assert r.status_code == 200
+    j = r.json()
+    assert j['code'] == 400
+    assert j['data'] is None
     assert isinstance(j['msg'], str)
