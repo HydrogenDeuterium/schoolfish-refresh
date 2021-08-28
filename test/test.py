@@ -21,7 +21,7 @@ def verify_200(r: httpx.Response) -> Union[dict, list]:
     assert isinstance(j := r.json(), dict)
     print(j)
     assert j[code] == 200
-    assert j[msg] == ""
+    assert j[msg] == "请求成功"
     return j[data]
 
 
@@ -47,9 +47,9 @@ def test_getcode():
     c.delete("/auth", params=p)
 
     d = verify_200(c.get("/auth", params=p))
-    print("code=", d)
+    assert d is None
     m = verify_400(c.get("/auth", params=p))
-    assert m == ""
+    assert m == "获取验证码过于频繁！"
 
 
 if __name__ == "__main__":
