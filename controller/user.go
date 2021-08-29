@@ -4,17 +4,17 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"schoolfish-refresh/models"
+	"schoolfish-refresh/model"
 )
 
-func User(g *gin.RouterGroup, db models.DBGroup) {
+func User(g *gin.RouterGroup, db model.DBGroup) {
 	g.POST("", func(c *gin.Context) {
 		email := c.DefaultPostForm("email", "")
 		if email == "" {
 			returnError(c, "提供邮箱！")
 			return
 		}
-		find := db.Mysql.Where("email = ?", email).First(&models.Users{}).RecordNotFound()
+		find := db.Mysql.Where("email = ?", email).First(&model.User{}).RecordNotFound()
 		if find == false {
 			returnError(c, "用户已注册!")
 			return
@@ -29,7 +29,7 @@ func User(g *gin.RouterGroup, db models.DBGroup) {
 			returnInternal(c)
 			return
 		}
-		user := &models.Users{
+		user := &model.User{
 			Username: c.DefaultPostForm("username", ""),
 			Email:    email,
 			Hashed:   string(hashed),
@@ -44,7 +44,7 @@ func User(g *gin.RouterGroup, db models.DBGroup) {
 
 	g.GET("/:uid", func(c *gin.Context) {
 		uid := c.Param("uid")
-		var user *models.Users
+		var user *model.User
 		if db.Mysql.Where("uid=?", uid).First(user).RecordNotFound() {
 			returnError(c, "用户未注册!")
 			return
@@ -60,11 +60,11 @@ func User(g *gin.RouterGroup, db models.DBGroup) {
 
 	g.PUT("/:uid", func(c *gin.Context) {
 		uid := c.Param("uid")
-		if db.Mysql.Where("uid=?", uid).First(&models.Users{}).RecordNotFound() {
+		if db.Mysql.Where("uid=?", uid).First(&model.User{}).RecordNotFound() {
 			returnError(c, "用户未注册!")
 		}
 		userMap := c.PostFormMap("user")
-		user := &models.Users{
+		user := &model.User{
 			Username: userMap["username"],
 			Email:    userMap["email"],
 			Hashed:   userMap["hashed"],

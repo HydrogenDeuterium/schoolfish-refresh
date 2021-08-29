@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"schoolfish-refresh/models"
+	"schoolfish-refresh/model"
 	"schoolfish-refresh/service"
 )
 
-func Auth(g *gin.RouterGroup, db models.DBGroup) {
+func Auth(g *gin.RouterGroup, db model.DBGroup) {
 	g.GET("", func(c *gin.Context) {
 		//获取的验证码和邮箱绑定
 		email := c.Query("email")
@@ -59,9 +59,9 @@ func Auth(g *gin.RouterGroup, db models.DBGroup) {
 		//	returnError(c, "验证码无效或已过期！")
 		//	return
 		//}
-		user := &models.Users{}
+		user := &model.User{}
 		where := db.Mysql.Where("email=?", email)
-		//where := db.Mysql.Model(&models.Users{}).Where("email=?", email)
+		//where := db.Mysql.Model(&model.User{}).Where("email=?", email)
 		db := where.First(user)
 		if db.RecordNotFound() {
 			returnError(c, "用户不存在！")

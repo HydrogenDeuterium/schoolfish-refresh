@@ -5,11 +5,11 @@ import (
 	"log"
 	"net/http"
 	"schoolfish-refresh/controller"
-	"schoolfish-refresh/models"
+	"schoolfish-refresh/model"
 )
 
 func main() {
-	DB := models.DBInit()
+	DB := model.DBInit()
 	defer DB.Close()
 
 	r := gin.Default()
