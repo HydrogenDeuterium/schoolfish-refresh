@@ -1,6 +1,10 @@
 package controller
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"time"
+)
 
 func returnJson(c *gin.Context, code int, data interface{}, message string) {
 	c.JSON(200, gin.H{
@@ -23,4 +27,30 @@ func returnError(c *gin.Context, msg string) {
 //内部错误啥都不用给
 func returnInternal(c *gin.Context) {
 	returnJson(c, 500, nil, "")
+}
+
+type Claims struct {
+	Email string `json:"email"`
+	Pwd   string `json:"password"`
+	jwt.StandardClaims
+}
+
+func getToken(email string, pwd string) (string, error) {
+	//设置token有效时间
+	claims := Claims{
+		Email: email,
+		Pwd:   pwd,
+		StandardClaims: jwt.StandardClaims{
+			// 过期时间
+			ExpiresAt: time.Now().Add(3 * time.Hour).Unix(),
+			// 指定token发行人
+			Issuer: "back-end",
+		},
+	}
+
+	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	//该方法内部生成签名字符串，再用于获取完整、已签名的token
+	jwtSecret := []byte("123456")
+	token, err := tokenClaims.SignedString(jwtSecret)
+	return token, err
 }

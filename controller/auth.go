@@ -63,7 +63,10 @@ func Auth(g *gin.RouterGroup, db models.DBs) {
 			return
 		}
 		//TODO 实现计算token
-		token := "123456"
+		token, err := getToken(email, pwd)
+		if err != nil {
+			returnInternal(c)
+		}
 		returnGood(c, token)
 	})
 }
