@@ -8,7 +8,7 @@ import (
 	"schoolfish-refresh/service"
 )
 
-func Auth(g *gin.RouterGroup, db models.DBs) {
+func Auth(g *gin.RouterGroup, db models.DBGroup) {
 	g.GET("", func(c *gin.Context) {
 		//获取的验证码和邮箱绑定
 		email := c.Query("email")

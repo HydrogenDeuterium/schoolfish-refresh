@@ -24,22 +24,22 @@ func mysqlInit() *gorm.DB {
 	return db
 }
 
-type DBs struct {
+type DBGroup struct {
 	redis *redis.Client
 	Mysql *gorm.DB
 }
 
-func (dbs DBs) Close() {
+func (dbs DBGroup) Close() {
 	_ = dbs.redis.Close()
 	_ = dbs.Mysql.Close()
 }
 
-func (dbs DBs) RedisGet(email string) string {
+func (dbs DBGroup) RedisGet(email string) string {
 	ret, _ := dbs.redis.Get(email).Result()
 	return ret
 }
 
-func (dbs DBs) RedisSet(email string) string {
+func (dbs DBGroup) RedisSet(email string) string {
 	code := "123456"
 
 	//*测试用
@@ -56,7 +56,7 @@ func (dbs DBs) RedisSet(email string) string {
 
 }
 
-func (dbs DBs) RedisDel(email string) {
+func (dbs DBGroup) RedisDel(email string) {
 	dbs.redis.Del(email)
 }
 
@@ -67,8 +67,8 @@ func getRandomString() string {
 	return fmt.Sprintf("%x", randBytes)
 }
 
-func DBInit() DBs {
-	return DBs{
+func DBInit() DBGroup {
+	return DBGroup{
 		redisInit(),
 		mysqlInit(),
 	}
