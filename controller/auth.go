@@ -15,7 +15,8 @@ func Auth(g *gin.RouterGroup, db models.DBGroup) {
 		if email == "" {
 			returnError(c, "请提供邮箱！")
 		}
-		if db.RedisGet(email) != "" {
+		get, _ := db.RedisGet(email)
+		if get != "" {
 			returnError(c, "获取验证码过于频繁！")
 			return
 		}
@@ -47,16 +48,22 @@ func Auth(g *gin.RouterGroup, db models.DBGroup) {
 	g.POST("", func(c *gin.Context) {
 		email := c.PostForm("email")
 		pwd := c.PostForm("password")
-		code := c.Query("code")
-		if db.RedisGet(email) != code {
-			returnError(c, "验证码无效或已过期！")
-			return
-		}
-		var user *models.Users
-		db.Mysql.Where("email=?", email).Find(user)
-		if user == nil {
+		//code := c.DefaultQuery("code","123456")
+		//redis, err := db.RedisGet(email)
+		//if err != nil || redis != code {
+		//	returnError(c, "验证码无效或已过期！")
+		//	return
+		//}
+		user := &models.Users{}
+		where := db.Mysql.Where("email=?", email)
+		//where := db.Mysql.Model(&models.Users{}).Where("email=?", email)
+		db := where.First(user)
+		if db.RecordNotFound() {
 			returnError(c, "用户不存在！")
 			return
+		}
+		if db.Error != nil {
+			returnInternal(c)
 		}
 		if bcrypt.CompareHashAndPassword([]byte(user.Hashed), []byte(pwd)) != nil {
 			returnError(c, "用户名与密码不匹配！")
