@@ -50,4 +50,5 @@ func main() {
 	}(r) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 
 	controller.Auth(r.Group("/auth"), DB)
+	controller.User(r.Group("/user"), DB)
 }
