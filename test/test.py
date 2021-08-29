@@ -1,5 +1,5 @@
-import json
 import os
+import random
 from typing import Union
 
 import httpx
@@ -24,14 +24,8 @@ msg = 'msg'
 
 def _200(r: httpx.Response) -> Union[dict, list]:
     assert r.status_code == 200
-    try:
-        j = r.json()
-    except json.JSONDecodeError as e:
-        log(r.content)
-        raise e
-
-    assert isinstance(j, dict)
-    log(j)
+    assert r.content != b''
+    assert isinstance(j := r.json(), dict)
     if j[code] != 200:
         log(j)
         raise AssertionError
@@ -39,14 +33,10 @@ def _200(r: httpx.Response) -> Union[dict, list]:
     return j[data]
 
 
-def _400(r: httpx.Response) -> str:
+def _400(r: httpx.Response) -> Union[dict, list]:
     assert r.status_code == 200
-    try:
-        j = r.json()
-    except json.JSONDecodeError as e:
-        log(r.content)
-        raise e
-    log(j)
+    assert r.content != b''
+    j = r.json()
     if j[code] != 400:
         log(j)
         raise AssertionError
@@ -56,12 +46,8 @@ def _400(r: httpx.Response) -> str:
 
 def _500(r: httpx.Response) -> None:
     assert r.status_code == 200
-    try:
-        j = r.json()
-    except json.JSONDecodeError as e:
-        log(r.content)
-        raise e
-    log(j)
+    assert r.content != b''
+    assert isinstance(j := r.json(), dict)
     if j[code] != 500:
         log(j)
         raise AssertionError
@@ -79,20 +65,64 @@ def test_getcode():
 
 
 def test_login():
-    err1 = {"email": "", "password": ""}
+    err0 = {"password": ""}
+    err1 = {"email": "5145615616515613261561561263156", "password": ""}
     err2 = {"email": "example@foo.bar", "password": ""}
     corr = {"email": "example@foo.bar", "password": "123456"}
     p = {"email": "example@foo.bar"}
-
     cd = "123456"
-    r_err1 = _400(c.post("/auth", params={code: "0"}, data=err1))
+
+    r_err0 = _400(c.post("/auth", data=err0))
+    assert r_err0 == '请提供邮箱！'
+
+    r_err1 = _400(c.post("/auth", data=err1))
     assert r_err1 == "用户不存在！"
 
-    r_err2 = _400(c.post("/auth", params={code: cd}, data=err2))
+    r_err2 = _400(c.post("/auth", data=err2))
     assert r_err2 == "用户名与密码不匹配！"
 
-    r_corr = _200(c.post("/auth", params={code: cd}, data=corr))
-    log(r_corr)
+    # r_corr = _200(c.post("/auth", params={code: cd}, data=corr))
+    # log(r_corr)
+
+
+def random_hex_str(n: int):
+    return "".join(random.sample("0123456789abcdef", n))
+
+
+def random_email():
+    address = random_hex_str(random.randint(4, 10))
+    domain = random_hex_str(random.randint(1, 4)) + random.choice([".edu", ".com", ".cn"])
+    return f"{address}@{domain}"
+
+
+def random_user_name():
+    return random_hex_str(8)
+
+
+def random_password():
+    return random_hex_str(8)
+
+
+def test_register():
+    re0 = _400(c.post("/user"))
+    assert re0 == "提供邮箱！"
+
+    err1 = {"username": "1", "email": "example@foo.bar", "avatar": "", "info": "",
+            "profile": "", "location": ""}
+    re1 = _400(c.post("/user", params={code: "0"}, data=err1))
+    assert re1 == "用户已注册!"
+
+    err2 = {"username": "1", "email": random_password(), "avatar": "", "info": "",
+            "profile": "", "location": ""}
+    re2 = _400(c.post("/user", params={code: "0"}, data=err2))
+    assert re2 == "提供密码！"
+
+    corr = {"username": random_user_name(), "email": random_email(), "password": random_password(), "avatar": "",
+            "info": "", "profile": "", "location": ""}
+    rcor = _200(c.post("/user", data=corr))
+
+    for key in corr.keys():
+        assert key == "password" or rcor[key] == corr[key]
 
 
 if __name__ == "__main__":

@@ -3,26 +3,43 @@ package controller
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"schoolfish-refresh/models"
 )
 
 func User(g *gin.RouterGroup, db models.DBGroup) {
 	g.POST("", func(c *gin.Context) {
-		userMap := c.PostFormMap("user")
-		err := db.Mysql.Where("email = ?", userMap["email"])
+		email := c.DefaultPostForm("email", "")
+		if email == "" {
+			returnError(c, "提供邮箱！")
+			return
+		}
+		find := db.Mysql.Where("email = ?", email).First(&models.Users{}).RecordNotFound()
+		if find == false {
+			returnError(c, "用户已注册!")
+			return
+		}
+		rawPassword := c.DefaultPostForm("password", "")
+		if rawPassword == "" {
+			returnError(c, "提供密码！")
+			return
+		}
+		hashed, err := bcrypt.GenerateFromPassword([]byte(rawPassword), 10)
 		if err != nil {
-			returnError(c, "用户已注册")
+			returnInternal(c)
+			return
 		}
 		user := &models.Users{
-			Username: userMap["username"],
-			Email:    userMap["email"],
-			Hashed:   userMap["hashed"],
-			Avatar:   userMap["avatar"],
-			Info:     userMap["info"],
-			Profile:  userMap["profile"],
-			Location: userMap["location"],
+			Username: c.DefaultPostForm("username", ""),
+			Email:    email,
+			Hashed:   string(hashed),
+			Avatar:   c.DefaultPostForm("avatar", ""),
+			Info:     c.DefaultPostForm("info", ""),
+			Profile:  c.DefaultPostForm("profile", ""),
+			Location: c.DefaultPostForm("location", ""),
 		}
 		db.Mysql.Create(user)
+		returnGood(c, user)
 	})
 
 	g.GET("/:uid", func(c *gin.Context) {
@@ -30,10 +47,12 @@ func User(g *gin.RouterGroup, db models.DBGroup) {
 		var user *models.Users
 		if db.Mysql.Where("uid=?", uid).First(user).RecordNotFound() {
 			returnError(c, "用户未注册!")
+			return
 		}
 		data, err := json.Marshal(user)
 		if err != nil {
 			returnInternal(c)
+			return
 		}
 		returnGood(c, data)
 

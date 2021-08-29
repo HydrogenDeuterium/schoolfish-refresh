@@ -46,7 +46,12 @@ func Auth(g *gin.RouterGroup, db models.DBGroup) {
 	})
 
 	g.POST("", func(c *gin.Context) {
-		email := c.PostForm("email")
+		email := c.DefaultPostForm("email", "")
+		if email == "" {
+			returnError(c, "请提供邮箱！")
+			return
+		}
+
 		pwd := c.PostForm("password")
 		//code := c.DefaultQuery("code","123456")
 		//redis, err := db.RedisGet(email)
@@ -64,6 +69,7 @@ func Auth(g *gin.RouterGroup, db models.DBGroup) {
 		}
 		if db.Error != nil {
 			returnInternal(c)
+			return
 		}
 		if bcrypt.CompareHashAndPassword([]byte(user.Hashed), []byte(pwd)) != nil {
 			returnError(c, "用户名与密码不匹配！")
