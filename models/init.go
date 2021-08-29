@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"github.com/go-redis/redis"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"math/rand"
 	"os"
@@ -19,8 +20,11 @@ func redisInit() *redis.Client {
 }
 
 func mysqlInit() *gorm.DB {
-	db, _ := gorm.Open("mysql",
+	db, err := gorm.Open("mysql",
 		os.Getenv("mysql_jdbc"))
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
 	return db
 }
 
@@ -34,9 +38,9 @@ func (dbs DBGroup) Close() {
 	_ = dbs.Mysql.Close()
 }
 
-func (dbs DBGroup) RedisGet(email string) string {
-	ret, _ := dbs.redis.Get(email).Result()
-	return ret
+func (dbs DBGroup) RedisGet(email string) (string, error) {
+	ret, err := dbs.redis.Get(email).Result()
+	return ret, err
 }
 
 func (dbs DBGroup) RedisSet(email string) string {
