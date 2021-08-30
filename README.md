@@ -109,13 +109,13 @@ Content-Type: application/json;charset=UTF-8
 
 - /product
   - GET: 获取所有
+  - POST: #上架
 - /product/:pid
   - GET: 获取信息
   - PUT: #更新信息
   - DELETE: #下架
 - /products/users/:uid
   - GET: 获取所有
-  - POST: #上架
 
 ### 评论相关
 
