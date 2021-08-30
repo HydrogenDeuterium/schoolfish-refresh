@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"schoolfish-refresh/model"
@@ -44,16 +43,12 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 
 	g.GET("/:uid", func(c *gin.Context) {
 		uid := c.Param("uid")
-		var user *model.User
-		if db.Mysql.Where("uid=?", uid).First(user).RecordNotFound() {
+		user := model.User{}
+		if db.Mysql.Where("uid=?", uid).First(&user).RecordNotFound() {
 			returnError(c, "用户未注册!")
 			return
 		}
-		data, err := json.Marshal(user)
-		if err != nil {
-			returnInternal(c)
-			return
-		}
+		data := Struct2Map(user)
 		returnGood(c, data)
 
 	})
@@ -78,5 +73,6 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			returnInternal(c)
 		}
 		db.Mysql.Create(user)
+
 	})
 }

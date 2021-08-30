@@ -125,5 +125,25 @@ def test_register():
         assert key == "password" or rcor[key] == corr[key]
 
 
+def test_userinfo():
+    re = _400(c.get("/user/0"))
+    assert re == "用户未注册!"
+
+    co = _200(c.get("/user/24"))
+    assert co == {
+        'CreatedAt': '2021-08-17T18:22:41Z',
+        'UpdatedAt': '2021-08-17T18:22:41Z',
+        'DeletedAt': None,
+        'Uid': 24,
+        'Username': 'alexzhangzhe',
+        'Email': 'alexzhang@deu.wiki',
+        'Hashed': 'sdsdsdssgdgfsd',
+        'Info': '我shizhangzhe',
+        'Profile': 'hhhhh',
+        'Location': 'noname01',
+        'Avatar': 'sdfsdd',
+    }
+
+
 if __name__ == "__main__":
     pass
