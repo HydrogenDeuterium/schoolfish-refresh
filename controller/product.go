@@ -27,7 +27,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		returnGood(c, products)
 	})
 
-	g.POST("", func(c *gin.Context) {
+	g.POST("", JWTAuthMiddleware(), func(c *gin.Context) {
 
 	})
 }
