@@ -142,5 +142,10 @@ def test_userinfo():
     }
 
 
+def test_product_getall():
+    co = _200(c.get("/products", params={"page": 1}))
+    assert co ==[]
+
+
 if __name__ == "__main__":
     pass
