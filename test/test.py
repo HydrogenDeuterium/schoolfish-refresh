@@ -131,9 +131,6 @@ def test_userinfo():
 
     co = _200(c.get("/user/24"))
     assert co == {
-        'CreatedAt': '2021-08-17T18:22:41Z',
-        'UpdatedAt': '2021-08-17T18:22:41Z',
-        'DeletedAt': None,
         'Uid': 24,
         'Username': 'alexzhangzhe',
         'Email': 'alexzhang@deu.wiki',

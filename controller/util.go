@@ -64,5 +64,9 @@ func Struct2Map(obj interface{}) map[string]interface{} {
 	for i := 0; i < t.NumField(); i++ {
 		data[t.Field(i).Name] = v.Field(i).Interface()
 	}
+	//去掉数据库读写时间等信息
+	delete(data, "CreatedAt")
+	delete(data, "UpdatedAt")
+	delete(data, "DeletedAt")
 	return data
 }
