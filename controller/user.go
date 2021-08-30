@@ -73,6 +73,6 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			returnInternal(c)
 		}
 		db.Mysql.Create(user)
-
+		returnGood(c, Struct2Map(user))
 	})
 }
