@@ -129,4 +129,39 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		util.ReturnGood(c, product)
 
 	})
+
+	g.DELETE("/:pid", middleware.LogonRequire(db), func(c *gin.Context) {
+		uid, exist := c.Get("uid")
+		if exist == false {
+			util.ReturnInternal(c)
+			return
+		}
+
+		pid := c.Param("pid")
+
+		var product model.Product
+		//golang 不支持双引号 json
+		result := db.Mysql.Where("pid=?", pid).First(&product)
+		if result.RecordNotFound() {
+			util.ReturnError(c, "不能删除不存在的商品！")
+			return
+		}
+		result = db.Mysql.Where("owner=?", uid).First(&product)
+		if result.RecordNotFound() {
+			util.ReturnError(c, "没有所有权！")
+		}
+
+		result = db.Mysql.Model(&model.Product{}).Delete(&product)
+		if result.RowsAffected != 1 {
+			//我寻思一次应该只能删掉一个
+			result.Rollback()
+			util.ReturnInternal(c)
+		}
+		if result.Error != nil {
+			util.ReturnInternal(c)
+			return
+		}
+		util.ReturnGood(c, product)
+
+	})
 }
