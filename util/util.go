@@ -16,18 +16,18 @@ func returnJson(c *gin.Context, code int, data interface{}, message string) {
 	})
 }
 
-//好的返回值不用给信息，能得到数据就行
 func ReturnGood(c *gin.Context, data interface{}) {
+	//好的返回值不用给信息，能得到数据就行
 	returnJson(c, 200, data, "请求成功")
 }
 
-//坏的返回值不用给数据，告诉前端哪里有问题
 func ReturnError(c *gin.Context, msg string) {
+	//坏的返回值不用给数据，告诉前端哪里有问题
 	returnJson(c, 400, nil, msg)
 }
 
-//内部错误啥都不用给
 func ReturnInternal(c *gin.Context) {
+	//内部错误啥都不用给
 	returnJson(c, 500, nil, "")
 }
 
