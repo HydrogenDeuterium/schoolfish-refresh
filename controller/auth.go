@@ -76,7 +76,7 @@ func Auth(g *gin.RouterGroup, db model.DBGroup) {
 			return
 		}
 		//TODO 实现计算token
-		token, err := getToken(email, pwd)
+		token, err := getToken(user.Uid, email, pwd)
 		if err != nil {
 			returnInternal(c)
 		}

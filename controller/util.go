@@ -33,14 +33,16 @@ func returnInternal(c *gin.Context) {
 }
 
 type Claims struct {
+	Uid   uint   `json:"uid"`
 	Email string `json:"email"`
 	Pwd   string `json:"password"`
 	jwt.StandardClaims
 }
 
-func getToken(email string, pwd string) (string, error) {
+func getToken(uid uint, email string, pwd string) (string, error) {
 	//设置token有效时间
 	claims := Claims{
+		Uid:   uid,
 		Email: email,
 		Pwd:   pwd,
 		StandardClaims: jwt.StandardClaims{
@@ -103,6 +105,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			c.Abort()
 			return
 		}
+		//别问我为啥他要这么处理，非要在前面加个“Bearer ”
 		// 按空格分割
 		parts := strings.SplitN(authHeader, " ", 2)
 		if !(len(parts) == 2 && parts[0] == "Bearer") {
@@ -111,14 +114,15 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			return
 		}
 		// parts[1]是获取到的tokenString，我们使用之前定义好的解析JWT的函数来解析它
-		mc, err := ParseToken(parts[1])
+		claim, err := ParseToken(parts[1])
 		if err != nil {
 			returnError(c, "无效的Token")
 			c.Abort()
 			return
 		}
 		// 将当前请求的username信息保存到请求的上下文c上
-		c.Set("email", mc.Email)
+		c.Set("email", claim.Email)
+		c.Set("uid", claim.Uid)
 		c.Next() // 后续的处理函数可以用过c.Get("username")来获取当前请求的用户信息
 	}
 }
