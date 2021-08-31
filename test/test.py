@@ -148,15 +148,26 @@ def test_product_get_all():
 
 
 def test_product_new():
-    err0 = _400(c.post("/products", params={"page": 1}))
-    assert err0 == '请求头中auth为空'
-    jwt: str = _200(c.post("/auth", data={"email": "example@foo.bar", "password": "123456"}))
-    print(jwt)
-    err1 = _400(c.post("/products", headers={"Authorization": jwt}, params={"page": 1}))
-    assert err1 == "请求头中auth格式有误"
-    jwt = "Bearer " + jwt
-    co = _200(c.post("/products", headers={"Authorization": jwt}, params={"page": 1}))
-    assert co is None
+    return
+    # err0 = _400(c.get("/products/user", params={"page": 1}))
+    # assert err0 == '请求头中auth为空'
+    # jwt: str = get_token()
+    # print(jwt)
+    # err1 = _400(c.get("/products/user", headers={"Authorization": jwt}, params={"page": 1}))
+    # assert err1 == "请求头中auth格式有误"
+    # err3 = _400(c.get("/products/user", headers={"Authorization": "Bearer 123456"}, params={"page": 1}))
+    # assert err3 == "无效的Token"
+    # jwt = "Bearer " + jwt
+    # co = _200(c.get("/products/user", headers={"Authorization": jwt}, params={"page": 1}))
+    # assert co == []
+
+
+def test_view_user_product():
+    pass
+
+
+def get_token():
+    return _200(c.post("/auth", data={"email": "example@foo.bar", "password": "123456"}))
 
 
 if __name__ == "__main__":

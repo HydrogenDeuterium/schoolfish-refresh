@@ -41,8 +41,12 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 		returnGood(c, user)
 	})
 
-	g.GET("/:uid", func(c *gin.Context) {
-		uid := c.Param("uid")
+	g.GET("/", JWTAuthMiddleware(), func(c *gin.Context) {
+		uid, exist := c.Get("uid")
+		if exist == false {
+			returnInternal(c)
+			return
+		}
 		user := model.User{}
 		if db.Mysql.Where("uid=?", uid).First(&user).RecordNotFound() {
 			returnError(c, "用户未注册!")
@@ -53,8 +57,13 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 
 	})
 
-	g.PUT("/:uid", func(c *gin.Context) {
-		uid := c.Param("uid")
+	g.PUT("/", JWTAuthMiddleware(), func(c *gin.Context) {
+		//uid := c.Param("uid")
+		uid, exist := c.Get("uid")
+		if exist == false {
+			returnInternal(c)
+			return
+		}
 		if db.Mysql.Where("uid=?", uid).First(&model.User{}).RecordNotFound() {
 			returnError(c, "用户未注册!")
 		}

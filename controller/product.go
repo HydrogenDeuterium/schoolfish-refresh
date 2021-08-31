@@ -27,8 +27,29 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		returnGood(c, products)
 	})
 
-	g.POST("", JWTAuthMiddleware(), func(c *gin.Context) {
-		returnGood(c, nil)
+	g.GET("/user/:uid", func(c *gin.Context) {
+		uid, exists := c.Get("uid")
+		if exists == false {
+			returnInternal(c)
+			return
+		}
+		user := model.User{}
+		result := db.Mysql.Where("uid=?", uid).First(&user)
+		if result.RecordNotFound() {
+			returnError(c, "用户不存在！")
+			return
+		}
+		if result.Error != nil {
+			returnInternal(c)
+			return
+		}
+		var products []model.Product
+		result = db.Mysql.Where("owner=?", uid).Find(&products)
+		if result.Error != nil {
+			returnInternal(c)
+			return
+		}
+		returnGood(c, products)
 	})
 
 }
