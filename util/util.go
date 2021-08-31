@@ -1,4 +1,4 @@
-package controller
+package util
 
 import (
 	"errors"
@@ -38,7 +38,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func getToken(uid uint, email string, pwd string) (string, error) {
+func GetToken(uid uint, email string, pwd string) (string, error) {
 	//设置token有效时间
 	claims := Claims{
 		Uid:   uid,

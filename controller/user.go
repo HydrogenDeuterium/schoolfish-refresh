@@ -5,28 +5,29 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"schoolfish-refresh/middleware"
 	"schoolfish-refresh/model"
+	"schoolfish-refresh/util"
 )
 
 func User(g *gin.RouterGroup, db model.DBGroup) {
 	g.POST("", func(c *gin.Context) {
 		email := c.DefaultPostForm("email", "")
 		if email == "" {
-			ReturnError(c, "提供邮箱！")
+			util.ReturnError(c, "提供邮箱！")
 			return
 		}
 		find := db.Mysql.Where("email = ?", email).First(&model.User{}).RecordNotFound()
 		if find == false {
-			ReturnError(c, "用户已注册!")
+			util.ReturnError(c, "用户已注册!")
 			return
 		}
 		rawPassword := c.DefaultPostForm("password", "")
 		if rawPassword == "" {
-			ReturnError(c, "提供密码！")
+			util.ReturnError(c, "提供密码！")
 			return
 		}
 		hashed, err := bcrypt.GenerateFromPassword([]byte(rawPassword), 10)
 		if err != nil {
-			ReturnInternal(c)
+			util.ReturnInternal(c)
 			return
 		}
 		user := &model.User{
@@ -39,22 +40,22 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			Location: c.DefaultPostForm("location", ""),
 		}
 		db.Mysql.Create(user)
-		ReturnGood(c, user)
+		util.ReturnGood(c, user)
 	})
 
 	g.GET("/", middleware.LogonRequire(), func(c *gin.Context) {
 		uid, exist := c.Get("uid")
 		if exist == false {
-			ReturnInternal(c)
+			util.ReturnInternal(c)
 			return
 		}
 		user := model.User{}
 		if db.Mysql.Where("uid=?", uid).First(&user).RecordNotFound() {
-			ReturnError(c, "用户未注册!")
+			util.ReturnError(c, "用户未注册!")
 			return
 		}
-		data := Struct2Map(user)
-		ReturnGood(c, data)
+		data := util.Struct2Map(user)
+		util.ReturnGood(c, data)
 
 	})
 
@@ -62,11 +63,11 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 		//uid := c.Param("uid")
 		uid, exist := c.Get("uid")
 		if exist == false {
-			ReturnInternal(c)
+			util.ReturnInternal(c)
 			return
 		}
 		if db.Mysql.Where("uid=?", uid).First(&model.User{}).RecordNotFound() {
-			ReturnError(c, "用户未注册!")
+			util.ReturnError(c, "用户未注册!")
 		}
 		userMap := c.PostFormMap("user")
 		user := &model.User{
@@ -80,9 +81,9 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 		}
 		err := db.Mysql.Update("email = ?", userMap["email"])
 		if err != nil {
-			ReturnInternal(c)
+			util.ReturnInternal(c)
 		}
 		db.Mysql.Create(user)
-		ReturnGood(c, Struct2Map(user))
+		util.ReturnGood(c, util.Struct2Map(user))
 	})
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"schoolfish-refresh/model"
+	"schoolfish-refresh/util"
 	"strconv"
 )
 
@@ -12,7 +13,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 		if err != nil {
 			fmt.Println(err.Error())
-			ReturnInternal(c)
+			util.ReturnInternal(c)
 			return
 		}
 		pageSize := 20
@@ -22,34 +23,34 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		err = db.Mysql.Limit(pageSize).Offset(page*pageSize - page).Find(&products).Error
 		if err != nil {
 			fmt.Println(err.Error())
-			ReturnInternal(c)
+			util.ReturnInternal(c)
 		}
-		ReturnGood(c, products)
+		util.ReturnGood(c, products)
 	})
 
 	g.GET("/user/:uid", func(c *gin.Context) {
 		uid, exists := c.Get("uid")
 		if exists == false {
-			ReturnInternal(c)
+			util.ReturnInternal(c)
 			return
 		}
 		user := model.User{}
 		result := db.Mysql.Where("uid=?", uid).First(&user)
 		if result.RecordNotFound() {
-			ReturnError(c, "用户不存在！")
+			util.ReturnError(c, "用户不存在！")
 			return
 		}
 		if result.Error != nil {
-			ReturnInternal(c)
+			util.ReturnInternal(c)
 			return
 		}
 		var products []model.Product
 		result = db.Mysql.Where("owner=?", uid).Find(&products)
 		if result.Error != nil {
-			ReturnInternal(c)
+			util.ReturnInternal(c)
 			return
 		}
-		ReturnGood(c, products)
+		util.ReturnGood(c, products)
 	})
 
 }

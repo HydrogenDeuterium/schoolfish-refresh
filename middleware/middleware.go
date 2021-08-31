@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"schoolfish-refresh/controller"
+	"schoolfish-refresh/util"
 	"strings"
 )
 
@@ -19,7 +19,7 @@ func LogonRequire() func(c *gin.Context) {
 		//}
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
-			controller.ReturnError(c, "请求头中auth为空")
+			util.ReturnError(c, "请求头中auth为空")
 			c.Abort()
 			return
 		}
@@ -27,14 +27,14 @@ func LogonRequire() func(c *gin.Context) {
 		// 按空格分割
 		parts := strings.SplitN(authHeader, " ", 2)
 		if !(len(parts) == 2 && parts[0] == "Bearer") {
-			controller.ReturnError(c, "请求头中auth格式有误")
+			util.ReturnError(c, "请求头中auth格式有误")
 			c.Abort()
 			return
 		}
 		// parts[1]是获取到的tokenString，我们使用之前定义好的解析JWT的函数来解析它
-		claim, err := controller.ParseToken(parts[1])
+		claim, err := util.ParseToken(parts[1])
 		if err != nil {
-			controller.ReturnError(c, "无效的Token")
+			util.ReturnError(c, "无效的Token")
 			c.Abort()
 			return
 		}
