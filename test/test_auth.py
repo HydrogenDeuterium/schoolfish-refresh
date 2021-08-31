@@ -4,10 +4,13 @@ from test.util import _400, _200
 
 def test_getcode():
     p = {"email": "123@456"}
-    c.delete("/auth", params=p)
 
+    c.delete("/auth", params=p)
+    c.get("/auth", params=p)
     m = _400(c.get("/auth", params=p))
     assert m == "获取验证码过于频繁！"
+
+    c.delete("/auth", params=p)
     d = _200(c.get("/auth", params=p))
     assert d is None
 
