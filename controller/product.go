@@ -28,6 +28,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 	})
 
 	g.POST("", JWTAuthMiddleware(), func(c *gin.Context) {
-
+		returnGood(c, nil)
 	})
+
 }

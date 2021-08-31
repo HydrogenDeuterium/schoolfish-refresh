@@ -147,6 +147,17 @@ def test_product_getall():
     assert co ==[]
 
 
+def test_product_new():
+    err0 = _400(c.post("/products", params={"page": 1}))
+    assert err0 == '请求头中auth为空'
+    jwt: str = _200(c.post("/auth", data={"email": "example@foo.bar", "password": "123456"}))
+    print(jwt)
+    err1 = _400(c.post("/products", headers={"Authorization": jwt}, params={"page": 1}))
+    assert err1 == "请求头中auth格式有误"
+    jwt = "Bearer " + jwt
+    co = _200(c.post("/products", headers={"Authorization": jwt}, params={"page": 1}))
+    assert co is None
+
 
 if __name__ == "__main__":
     pass
