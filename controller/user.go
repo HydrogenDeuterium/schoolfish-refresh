@@ -43,30 +43,28 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 		util.ReturnGood(c, user)
 	})
 
-	g.GET("/", middleware.LogonRequire(), func(c *gin.Context) {
+	g.GET("", middleware.LogonRequire(db), func(c *gin.Context) {
 		uid, exist := c.Get("uid")
 		if exist == false {
 			util.ReturnInternal(c)
 			return
 		}
 		user := model.User{}
-		if db.Mysql.Where("uid=?", uid).First(&user).RecordNotFound() {
-			util.ReturnError(c, "用户未注册!")
+		result := db.Mysql.Where("uid=?", uid).First(&user)
+		if result.Error != nil {
+			util.ReturnInternal(c)
 			return
 		}
 		util.ReturnGood(c, user)
 
 	})
 
-	g.PUT("/", middleware.LogonRequire(), func(c *gin.Context) {
+	g.PUT("/", middleware.LogonRequire(db), func(c *gin.Context) {
 		//uid := c.Param("uid")
 		uid, exist := c.Get("uid")
 		if exist == false {
 			util.ReturnInternal(c)
 			return
-		}
-		if db.Mysql.Where("uid=?", uid).First(&model.User{}).RecordNotFound() {
-			util.ReturnError(c, "用户未注册!")
 		}
 		userMap := c.PostFormMap("user")
 		user := model.User{
@@ -78,7 +76,7 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			Profile:  userMap["profile"],
 			Location: userMap["location"],
 		}
-		err := db.Mysql.Update("email = ?", userMap["email"])
+		err := db.Mysql.Update("email = ?", uid)
 		if err != nil {
 			util.ReturnInternal(c)
 		}

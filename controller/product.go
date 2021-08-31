@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/goinggo/mapstructure"
 	"log"
 	"schoolfish-refresh/middleware"
 	"schoolfish-refresh/model"
@@ -68,7 +69,27 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		util.ReturnGood(c, product)
 	})
 
-	g.POST("", middleware.LogonRequire(), func(c *gin.Context) {
+	g.POST("", middleware.LogonRequire(db), func(c *gin.Context) {
+		uid, exist := c.Get("uid")
+		if exist == false {
+			util.ReturnInternal(c)
+			return
+		}
+		var product model.Product
+		product.Owner = uid.(uint)
+		productMap := c.PostFormMap("product")
+		err := mapstructure.Decode(productMap, &product)
+		if err != nil {
+			util.ReturnInternal(c)
+			return
+		}
+
+		result := db.Mysql.Create(&product)
+		if result.Error != nil {
+			util.ReturnInternal(c)
+			return
+		}
+		util.ReturnGood(c, product)
 
 	})
 }
