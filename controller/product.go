@@ -20,13 +20,17 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnInternal(c)
 			return
 		}
-		pageSize := 20
+		pageSize := 10
 
 		var products []model.Product
 
-		err = db.Mysql.Limit(pageSize).Offset(page*pageSize - page).Find(&products).Error
-		if err != nil {
-			fmt.Println(err.Error())
+		result := db.Mysql.Debug().Model(model.Product{}).Limit(pageSize).Offset(page*pageSize - pageSize).Find(&products)
+
+		if result.RecordNotFound() {
+			fmt.Println("你妈的为什么")
+		}
+		if result.Error != nil {
+			fmt.Println(result.Error.Error())
 			util.ReturnInternal(c)
 		}
 		util.ReturnGood(c, products)
