@@ -94,4 +94,39 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		util.ReturnGood(c, product)
 
 	})
+
+	g.PUT("/:pid", middleware.LogonRequire(db), func(c *gin.Context) {
+		uid, exist := c.Get("uid")
+		if exist == false {
+			util.ReturnInternal(c)
+			return
+		}
+
+		pid := c.Param("pid")
+
+		var product model.Product
+		//golang 不支持双引号 json
+		result := db.Mysql.Where("pid=?", pid).First(&product)
+		if result.RecordNotFound() {
+			util.ReturnError(c, "商品不存在！")
+			return
+		}
+		productJson := strings.Replace(c.PostForm("product"), "'", "\"", -1)
+		err := json.Unmarshal([]byte(productJson), &product)
+		if err != nil {
+			util.ReturnInternal(c)
+			return
+		}
+		product.Owner = uid.(uint)
+
+		query := db.Mysql.Where("pid=?", pid).Limit(1)
+		//fmt.Println(query.Value)
+		result = query.Model(&model.Product{}).Update(&product)
+		if result.Error != nil {
+			util.ReturnInternal(c)
+			return
+		}
+		util.ReturnGood(c, product)
+
+	})
 }

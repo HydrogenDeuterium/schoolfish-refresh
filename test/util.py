@@ -90,7 +90,7 @@ def token_verify(method: methods, url: str, **kwargs):
     assert err2 == "请求头中auth格式有误"
 
     jwt = "Bearer " + jwt
-    return jwt
+    return {"Authorization": jwt}
 
 
 def auth_verify(method: methods, url: str, **kwargs):

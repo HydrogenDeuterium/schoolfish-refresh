@@ -93,29 +93,29 @@ Content-Type: application/json;charset=UTF-8
 ### 认证相关
 
 - /auth
-  - GET: 获取登录验证码
-  - POST: 登录
-  - DELETE: 删除登录验证码
+  - [-]GET: 获取登录验证码
+  - [-]POST: 登录
+  - [-]DELETE: 删除登录验证码
 
 ### 用户相关
 
 - /users
-  - POST: 注册
+  - [-] POST: 注册
 - /users/: uid
-  - GET: #获取用户信息
-  - PUT: #修改信息
+  - [-] GET: #获取用户信息
+  - [-] PUT: #修改信息
 
 ### 货物相关
 
 - /product
-  - GET: 获取所有
-  - POST: #上架
+  - [-] GET: 获取所有
+  - [-] POST: #上架
 - /product/:pid
-  - GET: 获取信息
-  - PUT: #更新信息
+  - [-] GET: 获取信息
+  - [-]PUT: #更新信息
   - DELETE: #下架
 - /products/users/:uid
-  - GET: 获取所有
+  - [-] GET: 获取所有
 
 ### 评论相关
 
