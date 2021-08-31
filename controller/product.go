@@ -28,13 +28,10 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		util.ReturnGood(c, products)
 	})
 
-	g.GET("/user/:uid", func(c *gin.Context) {
-		uid, exists := c.Get("uid")
-		if exists == false {
-			util.ReturnInternal(c)
-			return
-		}
-		user := model.User{}
+	g.GET("/users/:uid", func(c *gin.Context) {
+		uid := c.Param("uid")
+
+		var user = model.User{}
 		result := db.Mysql.Where("uid=?", uid).First(&user)
 		if result.RecordNotFound() {
 			util.ReturnError(c, "用户不存在！")
