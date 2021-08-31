@@ -30,11 +30,11 @@ def test_userinfo():
 
     co = _200(c.get("/users", headers=jwt))
     assert co == {
-        'Avatar': '',
-        'Email': 'example@foo.bar',
-        'Info': '',
-        'Location': '',
-        'Profile': '',
-        'Uid': 70,
-        'Username': '1'
+        'uid': 70,
+        'username': '1',
+        'email': 'example@foo.bar',
+        'avatar': '',
+        'info': '',
+        'location': '',
+        'profile': '',
     }
