@@ -3,7 +3,7 @@ from typing import Union
 
 import httpx
 
-from test import log, c
+from test import c
 
 code = 'code'
 data = 'data'
@@ -26,7 +26,6 @@ def _400(r: httpx.Response) -> Union[dict, list]:
     assert r.content != b''
     j = r.json()
     if j[code] != 400:
-        log(j)
         raise AssertionError(f"{j=}")
     assert j[data] is None
     return j[msg]

@@ -1,4 +1,6 @@
-from test import c, log
+import re
+
+from test import c
 from test.util import _400, _200
 
 
@@ -31,4 +33,4 @@ def test_login():
 
     corr = {"email": "example@foo.bar", "password": "123456"}
     r_corr = _200(c.post("/auth", params={"code": "123456"}, data=corr))
-    log(r_corr)
+    assert re.match(r"(.*)\.(.*)\.(.*)", r_corr)
