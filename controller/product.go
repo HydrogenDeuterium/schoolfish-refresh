@@ -3,6 +3,8 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
+	"schoolfish-refresh/middleware"
 	"schoolfish-refresh/model"
 	"schoolfish-refresh/util"
 	"strconv"
@@ -50,4 +52,23 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		util.ReturnGood(c, products)
 	})
 
+	g.GET("/:pid", func(c *gin.Context) {
+		pid := c.Param("pid")
+		var product model.Product
+		result := db.Mysql.Where("pid=?", pid).First(&product)
+		if result.RecordNotFound() {
+			util.ReturnError(c, "货物不存在！")
+			return
+		}
+		if err := result.Error; err != nil {
+			log.Println(err)
+			util.ReturnInternal(c)
+			return
+		}
+		util.ReturnGood(c, product)
+	})
+
+	g.POST("", middleware.LogonRequire(), func(c *gin.Context) {
+
+	})
 }

@@ -16,6 +16,18 @@ def test_view_user_product():
     ]
 
 
+def test_view_a_product():
+    err0 = _400(c.get("/products/-1"))
+    assert err0 == "货物不存在！"
+    corr = _200(c.get("/products/1"))
+    assert corr == {'info': '1',
+                    'location': '南京',
+                    'owner': 69,
+                    'pid': 1,
+                    'price': '1.20',
+                    'title': '测试商品'}
+
+
 def test_product_new():
     return
     # err0 = _400(c.get("/products/user", params={"page": 1}))
