@@ -26,10 +26,8 @@ def test_register():
 
 
 def test_userinfo():
-    jwt = auth_verify(c.get, "/users", )
-
-    co = _200(c.get("/users", headers=jwt))
-    assert co == {
+    corr = auth_verify(c.get, "/users", )
+    assert corr == {
         'uid': 70,
         'username': '1',
         'email': 'example@foo.bar',

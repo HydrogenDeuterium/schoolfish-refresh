@@ -34,14 +34,14 @@ def _400(r: httpx.Response) -> Union[dict, list]:
     return j[msg]
 
 
-def _500(r: httpx.Response) -> None:
-    assert r.status_code == 200
-    assert r.content != b''
-    assert isinstance(j := r.json(), dict)
-    if j[code] != 500:
-        log(j)
-        raise AssertionError
-    assert j[msg] == ""
+# def _500(r: httpx.Response) -> None:
+#     assert r.status_code == 200
+#     assert r.content != b''
+#     assert isinstance(j := r.json(), dict)
+#     if j[code] != 500:
+#         log(j)
+#         raise AssertionError
+#     assert j[msg] == ""
 
 
 def random_hex_str(n: int):
@@ -66,7 +66,10 @@ def get_token():
     return _200(c.post("/auth", data={"email": "example@foo.bar", "password": "123456"}))
 
 
-def auth_verify(method: Union[c.get, c.post, c.put, c.delete], url: str, **kwargs):
+methods = Union[c.get, c.post, c.put, c.delete]
+
+
+def token_verify(method: methods, url: str, **kwargs):
     err0 = _400(method(url, **kwargs))
     assert err0 == '请求头中auth为空'
 
@@ -78,4 +81,10 @@ def auth_verify(method: Union[c.get, c.post, c.put, c.delete], url: str, **kwarg
     assert err2 == "请求头中auth格式有误"
 
     jwt = "Bearer " + jwt
-    return {"Authorization": jwt}
+    return jwt
+
+
+def auth_verify(method: methods, url: str, **kwargs):
+    jwt = token_verify(method, url, **kwargs)
+    corr = _200(method(url, headers={"Authorization": jwt}, **kwargs))
+    return corr
