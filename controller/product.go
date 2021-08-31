@@ -12,7 +12,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 		if err != nil {
 			fmt.Println(err.Error())
-			returnInternal(c)
+			ReturnInternal(c)
 			return
 		}
 		pageSize := 20
@@ -22,34 +22,34 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		err = db.Mysql.Limit(pageSize).Offset(page*pageSize - page).Find(&products).Error
 		if err != nil {
 			fmt.Println(err.Error())
-			returnInternal(c)
+			ReturnInternal(c)
 		}
-		returnGood(c, products)
+		ReturnGood(c, products)
 	})
 
 	g.GET("/user/:uid", func(c *gin.Context) {
 		uid, exists := c.Get("uid")
 		if exists == false {
-			returnInternal(c)
+			ReturnInternal(c)
 			return
 		}
 		user := model.User{}
 		result := db.Mysql.Where("uid=?", uid).First(&user)
 		if result.RecordNotFound() {
-			returnError(c, "用户不存在！")
+			ReturnError(c, "用户不存在！")
 			return
 		}
 		if result.Error != nil {
-			returnInternal(c)
+			ReturnInternal(c)
 			return
 		}
 		var products []model.Product
 		result = db.Mysql.Where("owner=?", uid).Find(&products)
 		if result.Error != nil {
-			returnInternal(c)
+			ReturnInternal(c)
 			return
 		}
-		returnGood(c, products)
+		ReturnGood(c, products)
 	})
 
 }
