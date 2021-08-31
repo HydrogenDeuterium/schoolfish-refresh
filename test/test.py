@@ -22,7 +22,7 @@ data = 'data'
 msg = 'msg'
 
 
-def _200(r: httpx.Response) -> Union[dict, list]:
+def _200(r: httpx.Response) -> Union[dict, list, str]:
     assert r.status_code == 200
     assert r.content != b''
     assert isinstance(j := r.json(), dict)
@@ -81,8 +81,8 @@ def test_login():
     r_err2 = _400(c.post("/auth", data=err2))
     assert r_err2 == "用户名与密码不匹配！"
 
-    # r_corr = _200(c.post("/auth", params={code: cd}, data=corr))
-    # log(r_corr)
+    r_corr = _200(c.post("/auth", params={code: cd}, data=corr))
+    log(r_corr)
 
 
 def random_hex_str(n: int):
@@ -142,9 +142,9 @@ def test_userinfo():
     }
 
 
-def test_product_getall():
+def test_product_get_all():
     co = _200(c.get("/products", params={"page": 1}))
-    assert co ==[]
+    assert co == []
 
 
 def test_product_new():
