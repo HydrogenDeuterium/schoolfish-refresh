@@ -1,5 +1,5 @@
 from test import c
-from test.util import _200, _400
+from test.util import _200, _400, auth_verify, random_hex_str, random_location, random_price
 
 
 def test_product_get_by_page():
@@ -21,11 +21,22 @@ def test_view_a_product():
     assert err0 == "货物不存在！"
     corr = _200(c.get("/products/1"))
     assert corr == {'info': '1',
+                    'pid': 1,
                     'location': '南京',
                     'owner': 69,
-                    'pid': 1,
                     'price': '1.20',
                     'title': '测试商品'}
+
+
+def test_new_product():
+    product = {'info': random_hex_str(200),
+               'location': random_location(),
+               'price': random_price(),
+               'title': '测试商品' + random_hex_str(20)}
+    corr = auth_verify(c.post, "/products", data={"product": product})
+    del corr["owner"]
+    del corr["pid"]
+    assert corr == product
 
 
 def test_product_new():

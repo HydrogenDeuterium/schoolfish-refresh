@@ -45,7 +45,7 @@ def _400(r: httpx.Response) -> Union[dict, list]:
 
 
 def random_hex_str(n: int):
-    return "".join(random.sample("0123456789abcdef", n))
+    return "".join(random.choice("0123456789abcdef") for i in range(n))
 
 
 def random_email():
@@ -54,12 +54,21 @@ def random_email():
     return f"{address}@{domain}"
 
 
+def random_location():
+    locations = "南京", "北京", "上海", "广州", "深圳", "武汉", "重庆", "西安", "吉林"
+    return random.choice(locations)
+
+
 def random_user_name():
     return random_hex_str(8)
 
 
 def random_password():
     return random_hex_str(8)
+
+
+def random_price():
+    return str(random.randint(100, 10000) / 100)
 
 
 def get_token():

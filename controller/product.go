@@ -1,14 +1,15 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/goinggo/mapstructure"
 	"log"
 	"schoolfish-refresh/middleware"
 	"schoolfish-refresh/model"
 	"schoolfish-refresh/util"
 	"strconv"
+	"strings"
 )
 
 func Product(g *gin.RouterGroup, db model.DBGroup) {
@@ -76,13 +77,14 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 			return
 		}
 		var product model.Product
-		product.Owner = uid.(uint)
-		productMap := c.PostFormMap("product")
-		err := mapstructure.Decode(productMap, &product)
+		//golang 不支持双引号 json
+		productJson := strings.Replace(c.PostForm("product"), "'", "\"", -1)
+		err := json.Unmarshal([]byte(productJson), &product)
 		if err != nil {
 			util.ReturnInternal(c)
 			return
 		}
+		product.Owner = uid.(uint)
 
 		result := db.Mysql.Create(&product)
 		if result.Error != nil {
