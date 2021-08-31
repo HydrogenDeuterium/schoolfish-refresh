@@ -40,7 +40,7 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			Location: c.DefaultPostForm("location", ""),
 		}
 		db.Mysql.Create(user)
-		util.ReturnGood(c, user)
+		util.ReturnGood(c, util.Struct2Map(user))
 	})
 
 	g.GET("/", middleware.LogonRequire(), func(c *gin.Context) {

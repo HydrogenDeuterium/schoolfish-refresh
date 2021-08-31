@@ -71,6 +71,7 @@ func Struct2Map(obj interface{}) map[string]interface{} {
 	delete(data, "CreatedAt")
 	delete(data, "UpdatedAt")
 	delete(data, "DeletedAt")
+	delete(data, "Hashed")
 	return data
 }
 
