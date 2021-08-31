@@ -16,12 +16,13 @@ def test_register():
     re2 = _400(c.post("/users", params={"code": "0"}, data=err2))
     assert re2 == "提供密码！"
 
-    corr = {"username": random_user_name(), "email": random_email(), "password": random_password(), "avatar": "",
-            "info": "", "profile": "", "location": ""}
-    rcor = _200(c.post("/users", data=corr))
+    d_corr = {"username": random_user_name(), "email": random_email(), "password": random_password(), "avatar": "",
+              "info": "", "profile": "", "location": ""}
+    corr = _200(c.post("/users", data=d_corr))
 
-    for key in corr.keys():
-        assert key == "password" or rcor[key] == corr[key]
+    del d_corr["password"]
+    del corr["uid"]
+    assert corr == d_corr
 
 
 def test_userinfo():

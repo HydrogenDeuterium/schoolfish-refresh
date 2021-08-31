@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"reflect"
 	"time"
 )
 
@@ -57,22 +56,6 @@ func GetToken(uid uint, email string, pwd string) (string, error) {
 	jwtSecret := []byte("123456")
 	token, err := tokenClaims.SignedString(jwtSecret)
 	return token, err
-}
-
-func Struct2Map(obj interface{}) map[string]interface{} {
-	t := reflect.TypeOf(obj)
-	v := reflect.ValueOf(obj)
-
-	var data = make(map[string]interface{})
-	for i := 0; i < t.NumField(); i++ {
-		data[t.Field(i).Name] = v.Field(i).Interface()
-	}
-	//去掉数据库读写时间等信息
-	delete(data, "CreatedAt")
-	delete(data, "UpdatedAt")
-	delete(data, "DeletedAt")
-	delete(data, "Hashed")
-	return data
 }
 
 func ParseToken(tokenString string) (*Claims, error) {

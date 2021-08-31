@@ -14,19 +14,18 @@ def test_getcode():
 
 def test_login():
     err0 = {"password": ""}
-    err1 = {"email": "5145615616515613261561561263156", "password": ""}
-    err2 = {"email": "example@foo.bar", "password": ""}
-    corr = {"email": "example@foo.bar", "password": "123456"}
-    cd = "123456"
 
     r_err0 = _400(c.post("/auth", data=err0))
     assert r_err0 == '请提供邮箱！'
 
+    err1 = {"email": "5145615616515613261561561263156", "password": ""}
     r_err1 = _400(c.post("/auth", data=err1))
     assert r_err1 == "用户不存在！"
 
+    err2 = {"email": "example@foo.bar", "password": ""}
     r_err2 = _400(c.post("/auth", data=err2))
     assert r_err2 == "用户名与密码不匹配！"
 
-    r_corr = _200(c.post("/auth", params={"code": cd}, data=corr))
+    corr = {"email": "example@foo.bar", "password": "123456"}
+    r_corr = _200(c.post("/auth", params={"code": "123456"}, data=corr))
     log(r_corr)

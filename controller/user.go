@@ -30,7 +30,7 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnInternal(c)
 			return
 		}
-		user := &model.User{
+		user := model.User{
 			Username: c.DefaultPostForm("username", ""),
 			Email:    email,
 			Hashed:   string(hashed),
@@ -39,8 +39,8 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			Profile:  c.DefaultPostForm("profile", ""),
 			Location: c.DefaultPostForm("location", ""),
 		}
-		db.Mysql.Create(user)
-		util.ReturnGood(c, util.Struct2Map(user))
+		db.Mysql.Create(&user)
+		util.ReturnGood(c, user)
 	})
 
 	g.GET("/", middleware.LogonRequire(), func(c *gin.Context) {
@@ -54,8 +54,7 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnError(c, "用户未注册!")
 			return
 		}
-		data := util.Struct2Map(user)
-		util.ReturnGood(c, data)
+		util.ReturnGood(c, user)
 
 	})
 
@@ -70,7 +69,7 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnError(c, "用户未注册!")
 		}
 		userMap := c.PostFormMap("user")
-		user := &model.User{
+		user := model.User{
 			Username: userMap["username"],
 			Email:    userMap["email"],
 			Hashed:   userMap["hashed"],
@@ -83,7 +82,7 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 		if err != nil {
 			util.ReturnInternal(c)
 		}
-		db.Mysql.Create(user)
-		util.ReturnGood(c, util.Struct2Map(user))
+		db.Mysql.Create(&user)
+		util.ReturnGood(c, user)
 	})
 }
