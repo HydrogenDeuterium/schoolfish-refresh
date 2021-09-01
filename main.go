@@ -22,4 +22,5 @@ func main() {
 	controller.Auth(r.Group("/auth"), DB)
 	controller.User(r.Group("/users"), DB)
 	controller.Product(r.Group("/products"), DB)
+	controller.Comment(r.Group("/comments"), DB)
 }
