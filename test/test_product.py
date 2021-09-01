@@ -1,5 +1,5 @@
-from test import c
-from test.util import _200, _400, auth_verify, random_hex_str, random_location, random_price, token_verify
+from test import c, fake
+from test.util import _200, _400, auth_verify, token_verify
 
 
 def test_product_get_by_page():
@@ -98,11 +98,18 @@ def test_view_a_product():
                     'title': '测试商品'}
 
 
+def random_product(s: str):
+    ret = {
+        'title': s + fake.paragraph(),
+        'price': fake.pydecimal(left_digits=None, right_digits=2, positive=True, min_value=1, max_value=200),
+        'location': fake.address(),
+        'info': "\n".join(fake.paragraphs(3)),
+    }
+    return ret
+
+
 def test_new_product():
-    product = {'info': random_hex_str(200),
-               'location': random_location(),
-               'price': random_price(),
-               'title': '测试商品' + random_hex_str(20)}
+    product = random_product("测试新增商品")
     corr = auth_verify(c.post, "/products", data={"product": product})
     del corr["owner"]
     del corr["pid"]
@@ -110,10 +117,7 @@ def test_new_product():
 
 
 def test_update_product():
-    product = {'info': random_hex_str(200),
-               'location': random_location(),
-               'price': random_price(),
-               'title': '测试商品' + random_hex_str(20)}
+    product = random_product("测试修改商品")
     token = token_verify(c.put, "/products/20", data={"product": product})
 
     err = _400(c.put("/products/8", headers=token, data={"product": product}))
@@ -126,10 +130,7 @@ def test_update_product():
 
 
 def test_delete_product():
-    product = {'info': random_hex_str(200),
-               'location': random_location(),
-               'price': random_price(),
-               'title': '测试删除商品' + random_hex_str(20)}
+    product = random_product('测试删除商品')
     token = token_verify(c.delete, "/products/2")
 
     to_del = _200(c.post("/products", headers=token, data={"product": product}))

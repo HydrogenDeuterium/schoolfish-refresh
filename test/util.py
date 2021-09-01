@@ -5,6 +5,7 @@ import httpx
 
 from test import c
 
+
 code = 'code'
 data = 'data'
 msg = 'msg'
@@ -35,27 +36,27 @@ def random_hex_str(n: int):
     return "".join(random.choice("0123456789abcdef") for i in range(n))
 
 
-def random_email():
-    address = random_hex_str(random.randint(4, 10))
-    domain = random_hex_str(random.randint(1, 4)) + random.choice([".edu", ".com", ".cn"])
-    return f"{address}@{domain}"
+# def random_email():
+#     address = random_hex_str(random.randint(4, 10))
+#     domain = random_hex_str(random.randint(1, 4)) + random.choice([".edu", ".com", ".cn"])
+#     return f"{address}@{domain}"
 
 
-def random_location():
-    locations = "南京", "北京", "上海", "广州", "深圳", "武汉", "重庆", "西安", "吉林"
-    return random.choice(locations)
+# def random_location():
+#     locations = "南京", "北京", "上海", "广州", "深圳", "武汉", "重庆", "西安", "吉林"
+#     return random.choice(locations)
 
-
-def random_user_name():
-    return random_hex_str(8)
+#
+# def random_user_name():
+#     return random_hex_str(8)
 
 
 def random_password():
     return random_hex_str(8)
 
 
-def random_price():
-    return str(random.randint(100, 10000) / 100)
+# def random_price():
+#     return str(random.randint(100, 10000) / 100)
 
 
 def get_token():

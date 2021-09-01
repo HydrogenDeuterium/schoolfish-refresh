@@ -1,5 +1,5 @@
-from test import c
-from test.util import _400, random_password, random_user_name, random_email, _200, auth_verify
+from test import c, fake
+from test.util import _400, random_password, _200, auth_verify, random_hex_str
 
 
 def test_register():
@@ -16,8 +16,8 @@ def test_register():
     re2 = _400(c.post("/users", params={"code": "0"}, data=err2))
     assert re2 == "提供密码！"
 
-    d_corr = {"username": random_user_name(), "email": random_email(), "password": random_password(), "avatar": "",
-              "info": "", "profile": "", "location": ""}
+    d_corr = {"username": fake.name(), "email": fake.email(), "password": random_password(), "avatar": "",
+              "info": fake.paragraph(), "profile": random_hex_str(60), "location": fake.address()}
     corr = _200(c.post("/users", data=d_corr))
 
     del d_corr["password"]
