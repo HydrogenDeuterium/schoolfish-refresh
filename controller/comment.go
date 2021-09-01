@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"schoolfish-refresh/middleware"
 	"schoolfish-refresh/model"
+	"schoolfish-refresh/util"
 )
 
 func Comment(g *gin.RouterGroup, db model.DBGroup) {
@@ -28,7 +29,7 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 	})
 
 	g.PUT("/:cid", middleware.LogonRequire(db), func(c *gin.Context) {
-
+		util.ReturnGood(c, "暂未实现！")
 	})
 
 	g.DELETE("/:cid", middleware.LogonRequire(db), func(c *gin.Context) {
