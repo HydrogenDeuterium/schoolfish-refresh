@@ -101,9 +101,9 @@ def test_view_a_product():
 def random_product(s: str):
     ret = {
         'title': s + fake.paragraph(),
-        'price': fake.pydecimal(left_digits=None, right_digits=2, positive=True, min_value=1, max_value=200),
+        'price': str(fake.pyfloat(right_digits=2, min_value=1, max_value=200)),
         'location': fake.address(),
-        'info': "\n".join(fake.paragraphs(3)),
+        'info': "\n".join(fake.paragraphs(5)),
     }
     return ret
 
