@@ -74,6 +74,17 @@ def test_get_product_comment():
     assert corr == result
 
 
+def test_get_comment_by_id():
+    err = _400(c.get("/str"))
+    assert err == "cid格式不正确！"
+    corr = _200(c.get("/13"))
+    assert corr == {'cid': 13,
+                    'commentator': 70,
+                    'product': 1,
+                    'response_to': 0,
+                    'text': '等级品牌单位的人朋友其实更新.详细详细系列单位密码问题.日期非常部门还是作者汽车工程.'}
+
+
 def test_comment_update():
     corr = auth_verify(c.put, "/0")
     assert corr == "暂未实现！"

@@ -9,9 +9,6 @@ import (
 )
 
 func Comment(g *gin.RouterGroup, db model.DBGroup) {
-	g.GET(":cid", func(c *gin.Context) {
-
-	})
 
 	g.GET("/products/:pid", func(c *gin.Context) {
 		pid, err := strconv.Atoi(c.Param("pid"))
@@ -50,10 +47,26 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 
 		if err != nil {
 			util.ReturnInternal(c)
+			return
 		}
 		result := db.Mysql.Model(&model.Comment{}).Where("commentator=?", uid).First(&comment)
 		if result.Error != nil || result.RecordNotFound() {
 			util.ReturnInternal(c)
+		}
+		util.ReturnGood(c, comment)
+	})
+
+	g.GET("/:cid", func(c *gin.Context) {
+		cid, err := strconv.Atoi(c.Param("cid"))
+		if err != nil || cid <= 0 {
+			util.ReturnError(c, "cid格式不正确！")
+			return
+		}
+		comment := model.Comment{}
+		result := db.Mysql.Model(&model.Comment{}).Where("cid=?", cid).First(&comment)
+		if result.Error != nil || result.RecordNotFound() {
+			util.ReturnInternal(c)
+			return
 		}
 		util.ReturnGood(c, comment)
 	})
