@@ -126,7 +126,7 @@ Content-Type: application/json;charset=UTF-8
     - DELETE:#删除
 - /comments/:cid/response
     - [-]GET: 获取所有回复
-    - POST: #新增回复
+    - [-]POST: #新增回复
 - /comments/product/:pid
     - [-]GET: 获取所有指定货物的评论
     - [-]POST: #新增评论
