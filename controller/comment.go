@@ -25,10 +25,6 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 		util.ReturnGood(c, comments)
 	})
 
-	g.GET(":cid/response", func(c *gin.Context) {
-
-	})
-
 	g.POST("/products/:pid", middleware.LogonRequire(db), func(c *gin.Context) {
 		uid, _ := c.Get("uid")
 		pid, err := strconv.Atoi(c.Param("pid"))
@@ -82,4 +78,20 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 	g.DELETE("/:cid", middleware.LogonRequire(db), func(c *gin.Context) {
 
 	})
+
+	g.GET(":cid/response", func(c *gin.Context) {
+		cid, err := strconv.Atoi(c.Param("cid"))
+		if err != nil || cid <= 0 {
+			util.ReturnError(c, "pid格式不正确！")
+			return
+		}
+		var comments []model.Comment
+		err = db.Mysql.Model(model.Comment{}).Where("response_to=?", cid).Find(&comments).Error
+		if err != nil {
+			util.ReturnInternal(c)
+			return
+		}
+		util.ReturnGood(c, comments)
+	})
+
 }
