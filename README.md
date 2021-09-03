@@ -123,7 +123,7 @@ Content-Type: application/json;charset=UTF-8
 - /comments/:cid
     - [-]GET: 获取
     - [-]PUT: #修改
-    - DELETE:#删除
+    - [-]DELETE:#删除
 - /comments/:cid/response
     - [-]GET: 获取所有回复
     - [-]POST: #新增回复

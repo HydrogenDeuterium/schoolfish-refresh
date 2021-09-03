@@ -84,11 +84,11 @@ def test_get_product_comment():
          'product': 1,
          'response_to': 13,
          'text': '一下设计服务提高技术.有限工程客户一些看到免费工程.注册程序正在安全显示次数威望.'},
-        {'cid': 28,
+        {'cid': 30,
          'commentator': 70,
          'product': 1,
          'response_to': 13,
-         'text': '比较网上朋友所有问题.怎么联系规定女人提高这样.'},
+         'text': '这么的人只要需要作品什么搜索.的话实现一下安全谢谢.图片东西希望看到在线然后.'}
     ]
     err = _400(c.get("/products/str"))
     assert err == "pid格式不正确！"
@@ -102,6 +102,17 @@ def test_get_responses():
     assert err == "pid格式不正确！"
     corr = _200(c.get("/12/response"))
     assert corr == response
+
+
+def test_del_comment():
+    token = token_verify(c.delete, "/str")
+    err0 = _400(c.delete("/str", headers=token))
+    assert err0 == "cid格式不正确！"
+    err1 = _400(c.delete("/12", headers=token))
+    assert err1 == "无权操作！"
+    result = _200(c.post("/products/4", data=random_comment(), headers=token))
+    corr = _200(c.delete(f"/{result['cid']}", headers=token))
+    assert corr == result
 
 
 def test_get_comment_by_id():

@@ -12,6 +12,8 @@ msg = 'msg'
 
 
 def _200(r: httpx.Response) -> Union[dict, list, str]:
+    if r.status_code==404:
+        raise AssertionError("Not Fount,maybe caused by error url,check it.")
     assert r.status_code == 200
     assert r.content != b''
     assert isinstance(j := r.json(), dict)

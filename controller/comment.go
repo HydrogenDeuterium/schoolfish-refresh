@@ -72,7 +72,27 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 	})
 
 	g.DELETE("/:cid", middleware.LogonRequire(db), func(c *gin.Context) {
-
+		uid, _ := c.Get("uid")
+		cid, err := strconv.Atoi(c.Param("cid"))
+		if err != nil || cid <= 0 {
+			util.ReturnError(c, "cid格式不正确！")
+			return
+		}
+		comment := model.Comment{}
+		result := db.Mysql.Model(&model.Comment{}).Where("cid=?", cid).First(&comment)
+		if result.Error != nil {
+			util.ReturnInternal(c)
+			return
+		}
+		if comment.Commentator != uid {
+			util.ReturnError(c, "无权操作！")
+			return
+		}
+		result = db.Mysql.Model(&model.Comment{}).Where("cid=?", cid).Delete(&comment)
+		if result.Error != nil {
+			util.ReturnInternal(c)
+		}
+		util.ReturnGood(c, comment)
 	})
 
 	g.GET(":cid/response", func(c *gin.Context) {
