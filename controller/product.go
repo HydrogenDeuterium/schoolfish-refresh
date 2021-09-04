@@ -24,7 +24,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 
 		var products []model.Product
 
-		result := db.Mysql.Debug().Model(model.Product{}).Limit(pageSize).Offset(page*pageSize - pageSize).Find(&products)
+		result := db.Mysql.Model(model.Product{}).Limit(pageSize).Offset(page*pageSize - pageSize).Find(&products)
 
 		if result.RecordNotFound() {
 			fmt.Println("你妈的为什么")

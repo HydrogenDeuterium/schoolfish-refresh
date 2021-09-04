@@ -97,7 +97,8 @@ def test_get_product_comment():
 
 
 def test_get_responses():
-    response = [{'cid': 24, 'commentator': 71, 'product': 3, 'response_to': 12, 'text': '我回复了评论#12.'}]
+    response = [{'cid': 24, 'commentator': 71, 'product': 3,
+                 'response_to': 12, 'text': '我回复了评论#12.'}]
     err = _400(c.get("/str/response"))
     assert err == "pid格式不正确！"
     corr = _200(c.get("/12/response"))
@@ -119,7 +120,8 @@ def test_get_comment_by_id():
     err = _400(c.get("/str"))
     assert err == "cid格式不正确！"
     corr = _200(c.get("/13"))
-    assert corr == {'cid': 13,
+    assert corr == {
+        'cid': 13,
                     'commentator': 70,
                     'product': 3,
                     'response_to': 0,
