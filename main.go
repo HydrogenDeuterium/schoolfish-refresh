@@ -23,4 +23,5 @@ func main() {
 	controller.User(r.Group("/users"), DB)
 	controller.Product(r.Group("/products"), DB)
 	controller.Comment(r.Group("/comments"), DB)
+	controller.Message(r.Group("/message"), DB)
 }
