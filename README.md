@@ -133,11 +133,11 @@ Content-Type: application/json;charset=UTF-8
 
 ### 私聊相关
 
-- /messages/:uid/users
+- /messages/
     - GET: #获取往来用户
-- /messages/:uid1/&users=uid2
-    - GET: #获取与 uid2 的所有往来消息
-    - POST: #向 uid2 发送消息
+- /messages/:uid
+    - GET: #获取与 uid 的所有往来消息
+    - POST: #向 uid 发送消息
 
 ## 数据表设计
 
