@@ -23,23 +23,33 @@ func Message(c *gin.RouterGroup, DB model.DBGroup) {
 
 	c.GET("/:uid", func(c *gin.Context) {
 		self, _ := c.Get("uid")
-		if self == "" {
+		other := c.Param("uid")
+		uid, err := strconv.Atoi(other)
+		if err != nil || uid <= 0 {
 			util.ReturnError(c, "不正确的uid！")
 			return
 		}
-		util.ReturnGood(c, nil)
+		var messages []model.Messages
+		db := DB.Mysql.Model(model.Messages{}).Limit(10)
+		users := []string{strconv.Itoa(int(self.(uint))), other}
+		query := db.Where("`from` in (?)", users).Or("`to` in (?)", users)
+		result := query.Find(&messages)
+		if result.Error != nil {
+			util.ReturnInternal(c)
+			return
+		}
+		util.ReturnGood(c, messages)
 	})
 
 	c.POST("/:uid", func(c *gin.Context) {
 		self, _ := c.Get("uid")
-		self, err := strconv.Atoi(self.(string))
-		if err != nil {
+		other := c.Param("uid")
+		uid, err := strconv.Atoi(other)
+		if err != nil || uid <= 0 {
 			util.ReturnError(c, "不正确的uid！")
 			return
 		}
-		other := c.Param("uid")
-		uid, _ := strconv.Atoi(other)
-		text := c.Param("text")
+		text := c.PostForm("text")
 		message := model.Messages{
 			From: self.(uint),
 			To:   uint(uid),
