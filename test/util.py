@@ -68,22 +68,22 @@ def get_token():
 methods = Union[c.get, c.post, c.put, c.delete]
 
 
-def token_verify(method: methods, url: str, **kwargs):
-    err0 = _400(method(url, **kwargs))
+def token_verify(method: methods, url: str):
+    err0 = _400(method(url))
     assert err0 == '请求头中auth为空'
 
-    err1 = _400(method(url, headers={"Authorization": "Bearer 123456"}, **kwargs))
+    err1 = _400(method(url, headers={"Authorization": "Bearer 123456"}))
     assert err1 == "无效的Token"
 
     token: str = get_token()
-    err2 = _400(method(url, headers={"Authorization": token}, **kwargs))
+    err2 = _400(method(url, headers={"Authorization": token}))
     assert err2 == "请求头中auth格式有误"
 
     jwt = "Bearer " + token
     return {"Authorization": jwt}
 
-
-def auth_verify(method: methods, url: str, **kwargs):
-    token = token_verify(method, url, **kwargs)
-    corr = _200(method(url, headers=token, **kwargs))
-    return corr
+#
+# def auth_verify(method: methods, url: str, **kwargs):
+#     token = token_verify(method, url, **kwargs)
+#     corr = _200(method(url, headers=token, **kwargs))
+#     return corr

@@ -137,7 +137,7 @@ Content-Type: application/json;charset=UTF-8
     - GET: #获取往来用户
 - /messages/:uid
     - GET: #获取与 uid 的所有往来消息
-    - POST: #向 uid 发送消息
+    - POST: #向 uid发送消息
 
 ## 数据表设计
 

@@ -1,7 +1,7 @@
 import httpx
 
 from test import fake, url
-from test.util import auth_verify, token_verify, _200, _400
+from test.util import token_verify, _200, _400
 
 c = httpx.Client(base_url=f"{url}/comments", timeout=1000)
 
@@ -122,12 +122,13 @@ def test_get_comment_by_id():
     corr = _200(c.get("/13"))
     assert corr == {
         'cid': 13,
-                    'commentator': 70,
-                    'product': 3,
-                    'response_to': 0,
-                    'text': '等级品牌单位的人朋友其实更新.详细详细系列单位密码问题.日期非常部门还是作者汽车工程.'}
+        'commentator': 70,
+        'product': 3,
+        'response_to': 0,
+        'text': '等级品牌单位的人朋友其实更新.详细详细系列单位密码问题.日期非常部门还是作者汽车工程.'}
 
 
 def test_comment_update():
-    corr = auth_verify(c.put, "/0")
+    token = token_verify(c.put, "/0")
+    corr = _200(c.put("/0", headers=token))
     assert corr == "暂未实现！"

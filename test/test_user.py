@@ -1,5 +1,5 @@
 from test import c, fake
-from test.util import _400, random_password, _200, auth_verify
+from test.util import _400, random_password, _200, token_verify
 
 
 def random_user():
@@ -38,7 +38,8 @@ def test_register():
 
 
 def test_userinfo():
-    corr = auth_verify(c.get, "/users", )
+    token = token_verify(c.get, "/users", )
+    corr = _200(c.get("/users", headers=token))
     assert corr == {
         'uid': 70,
         'username': '1',
