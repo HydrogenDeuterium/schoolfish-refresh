@@ -5,57 +5,58 @@ import (
 	"time"
 )
 
-type Comment struct {
-	CreatedAt   time.Time  `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"-"`
-	UpdatedAt   time.Time  `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"-"`
-	DeletedAt   *time.Time `gorm:"column:deleted_at" json:"-"`
-	Cid         uint       `gorm:"column:cid;primary_key;AUTO_INCREMENT" json:"cid"`
-	Product     uint       `gorm:"column:product;NOT NULL" json:"product"`
-	Commentator uint       `gorm:"column:commentator;NOT NULL" json:"commentator"`
-	ResponseTo  uint       `gorm:"column:response_to" json:"response_to"`
-	Text        string     `gorm:"column:text" json:"text"`
+type Comments struct {
+	CreatedAt   time.Time  `gorm:"column:created_at;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
+	UpdatedAt   time.Time  `gorm:"column:updated_at;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
+	DeletedAt   *time.Time `gorm:"column:deleted_at;type:datetime" json:"-"`
+	Cid         uint       `gorm:"column:cid;type:int(11) unsigned;primary_key;AUTO_INCREMENT" json:"cid"`
+	Product     uint       `gorm:"column:product;type:int(11) unsigned;NOT NULL" json:"product"`
+	Commentator uint       `gorm:"column:commentator;type:int(11) unsigned;NOT NULL" json:"commentator"`
+	ResponseTo  *uint      `gorm:"column:response_to;type:int(11) unsigned" json:"response_to"`
+	Text        *string    `gorm:"column:text;type:longtext" json:"text"`
 }
 
-type Image struct {
-	CreatedAt time.Time  `gorm:"column:created_at;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
-	UpdatedAt time.Time  `gorm:"column:updated_at;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
-	DeletedAt *time.Time `gorm:"column:deleted_at" json:"-"`
-	Iid       uint       `gorm:"column:iid;AUTO_INCREMENT;NOT NULL" json:"iid"`
-	Address   string     `gorm:"column:address;NOT NULL" json:"address"`
-	Products  uint       `gorm:"column:products;NOT NULL" json:"products"`
+type Images struct {
+	CreatedAt time.Time  `gorm:"column:created_at;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
+	UpdatedAt time.Time  `gorm:"column:updated_at;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
+	DeletedAt *time.Time `gorm:"column:deleted_at;type:datetime" json:"-"`
+	Iid       uint       `gorm:"column:iid;type:int(11) unsigned;AUTO_INCREMENT;NOT NULL" json:"iid"`
+	Address   string     `gorm:"column:address;type:text;NOT NULL" json:"address"`
+	Products  uint       `gorm:"column:products;type:int(11) unsigned;NOT NULL" json:"products"`
 }
 
-type Message struct {
-	CreatedAt time.Time  `gorm:"column:created_at;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
-	UpdatedAt time.Time  `gorm:"column:updated_at;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
-	DeletedAt *time.Time `gorm:"column:deleted_at" json:"-"`
-	Mid       uint       `gorm:"column:mid;primary_key;AUTO_INCREMENT" json:"mid"`
-	From      uint       `gorm:"column:from;NOT NULL" json:"from"`
-	To        uint       `gorm:"column:to;NOT NULL" json:"to"`
+type Messages struct {
+	CreatedAt time.Time  `gorm:"column:created_at;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
+	UpdatedAt time.Time  `gorm:"column:updated_at;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
+	DeletedAt *time.Time `gorm:"column:deleted_at;type:datetime" json:"-"`
+	Mid       uint       `gorm:"column:mid;type:int(11) unsigned;primary_key;AUTO_INCREMENT" json:"mid"`
+	From      uint       `gorm:"column:from;type:int(11) unsigned;NOT NULL" json:"from"`
+	To        uint       `gorm:"column:to;type:int(11) unsigned;NOT NULL" json:"to"`
+	Text      *string    `gorm:"column:text;type:varchar(255)" json:"text"`
 }
 
-type Product struct {
-	CreatedAt time.Time  `gorm:"column:created_at;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
-	UpdatedAt time.Time  `gorm:"column:updated_at;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
-	DeletedAt *time.Time `gorm:"column:deleted_at" json:"-"`
-	Pid       uint       `gorm:"column:pid;primary_key;AUTO_INCREMENT" json:"pid"`
-	Title     string     `gorm:"column:title;NOT NULL" json:"title"`
-	Info      string     `gorm:"column:info" json:"info"`
-	Price     string     `gorm:"column:price;NOT NULL" json:"price"`
-	Owner     uint       `gorm:"column:owner;NOT NULL" json:"owner"`
-	Location  string     `gorm:"column:location" json:"location"`
+type Products struct {
+	CreatedAt time.Time  `gorm:"column:created_at;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
+	UpdatedAt time.Time  `gorm:"column:updated_at;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
+	DeletedAt *time.Time `gorm:"column:deleted_at;type:datetime" json:"-"`
+	Pid       uint       `gorm:"column:pid;type:int(11) unsigned;primary_key;AUTO_INCREMENT" json:"pid"`
+	Title     string     `gorm:"column:title;type:varchar(63);NOT NULL" json:"title"`
+	Info      *string    `gorm:"column:info;type:text" json:"info"`
+	Price     string     `gorm:"column:price;type:decimal(6,2);NOT NULL" json:"price"`
+	Owner     uint       `gorm:"column:owner;type:int(11) unsigned;NOT NULL" json:"owner"`
+	Location  *string    `gorm:"column:location;type:varchar(255)" json:"location"`
 }
 
-type User struct {
-	CreatedAt time.Time  `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"-"`
-	UpdatedAt time.Time  `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"-"`
-	DeletedAt *time.Time `gorm:"column:deleted_at" json:"-"`
-	Uid       uint       `gorm:"column:uid;primary_key;AUTO_INCREMENT" json:"uid"`
-	Username  string     `gorm:"column:username;NOT NULL" json:"username"`
-	Email     string     `gorm:"column:email;NOT NULL" json:"email"`
-	Hashed    string     `gorm:"column:hashed;NOT NULL" json:"-"` // 密码哈希
-	Avatar    string     `gorm:"column:avatar" json:"avatar"`     // 头像
-	Info      string     `gorm:"column:info" json:"info"`         // 简历
-	Profile   string     `gorm:"column:profile" json:"profile"`   // 详历
-	Location  string     `gorm:"column:location" json:"location"` // 默认地址
+type Users struct {
+	CreatedAt time.Time  `gorm:"column:created_at;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
+	UpdatedAt time.Time  `gorm:"column:updated_at;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL" json:"-"`
+	DeletedAt *time.Time `gorm:"column:deleted_at;type:datetime" json:"-"`
+	Uid       uint       `gorm:"column:uid;type:int(11) unsigned;primary_key;AUTO_INCREMENT" json:"uid"`
+	Username  string     `gorm:"column:username;type:varchar(32);NOT NULL" json:"username"`
+	Email     string     `gorm:"column:email;type:varchar(255);NOT NULL" json:"email"`
+	Hashed    string     `gorm:"column:hashed;type:char(64);NOT NULL" json:"-"`     // 密码哈希
+	Avatar    string     `gorm:"column:avatar;type:varchar(255)" json:"avatar"`     // 头像
+	Info      string     `gorm:"column:info;type:varchar(255)" json:"info"`         // 简历
+	Profile   string     `gorm:"column:profile;type:text" json:"profile"`           // 详历
+	Location  string     `gorm:"column:location;type:varchar(255)" json:"location"` // 默认地址
 }

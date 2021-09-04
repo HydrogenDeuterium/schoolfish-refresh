@@ -16,8 +16,8 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnError(c, "pid格式不正确！")
 			return
 		}
-		var comments []model.Comment
-		err = db.Mysql.Model(model.Comment{}).Where("product=?", pid).Limit(10).Find(&comments).Error
+		var comments []model.Comments
+		err = db.Mysql.Model(model.Comments{}).Where("product=?", pid).Limit(10).Find(&comments).Error
 		if err != nil {
 			util.ReturnInternal(c)
 			return
@@ -33,19 +33,19 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 			return
 		}
 		text := c.PostForm("text")
-		comment := model.Comment{
+		comment := model.Comments{
 			Product:     uint(pid),
 			Commentator: uid.(uint),
-			ResponseTo:  0,
-			Text:        text,
+			ResponseTo:  nil,
+			Text:        &text,
 		}
-		err = db.Mysql.Model(&model.Comment{}).Create(&comment).Error
+		err = db.Mysql.Model(&model.Comments{}).Create(&comment).Error
 
 		if err != nil {
 			util.ReturnInternal(c)
 			return
 		}
-		result := db.Mysql.Model(&model.Comment{}).Where("commentator=?", uid).First(&comment)
+		result := db.Mysql.Model(&model.Comments{}).Where("commentator=?", uid).First(&comment)
 		if result.Error != nil || result.RecordNotFound() {
 			util.ReturnInternal(c)
 		}
@@ -58,8 +58,8 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnError(c, "cid格式不正确！")
 			return
 		}
-		comment := model.Comment{}
-		result := db.Mysql.Model(&model.Comment{}).Where("cid=?", cid).First(&comment)
+		comment := model.Comments{}
+		result := db.Mysql.Model(&model.Comments{}).Where("cid=?", cid).First(&comment)
 		if result.Error != nil || result.RecordNotFound() {
 			util.ReturnInternal(c)
 			return
@@ -78,8 +78,8 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnError(c, "cid格式不正确！")
 			return
 		}
-		comment := model.Comment{}
-		result := db.Mysql.Model(&model.Comment{}).Where("cid=?", cid).First(&comment)
+		comment := model.Comments{}
+		result := db.Mysql.Model(&model.Comments{}).Where("cid=?", cid).First(&comment)
 		if result.Error != nil {
 			util.ReturnInternal(c)
 			return
@@ -88,7 +88,7 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnError(c, "无权操作！")
 			return
 		}
-		result = db.Mysql.Model(&model.Comment{}).Where("cid=?", cid).Delete(&comment)
+		result = db.Mysql.Model(&model.Comments{}).Where("cid=?", cid).Delete(&comment)
 		if result.Error != nil {
 			util.ReturnInternal(c)
 		}
@@ -101,8 +101,8 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnError(c, "pid格式不正确！")
 			return
 		}
-		var comments []model.Comment
-		err = db.Mysql.Model(model.Comment{}).Where("response_to=?", cid).Find(&comments).Error
+		var comments []model.Comments
+		err = db.Mysql.Model(model.Comments{}).Where("response_to=?", cid).Find(&comments).Error
 		if err != nil {
 			util.ReturnInternal(c)
 			return
@@ -117,26 +117,27 @@ func Comment(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnError(c, "cid格式不正确！")
 			return
 		}
-		var commentTo model.Comment
+		var commentTo model.Comments
 		err = db.Mysql.Model(&commentTo).Where("").First(&commentTo).Error
 		if err != nil {
 			util.ReturnInternal(c)
 			return
 		}
 		text := c.PostForm("text")
-		comment := model.Comment{
+		uc := uint(cid)
+		comment := model.Comments{
 			Product:     commentTo.Product,
 			Commentator: uid.(uint),
-			ResponseTo:  uint(cid),
-			Text:        text,
+			ResponseTo:  &uc,
+			Text:        &text,
 		}
-		err = db.Mysql.Model(&model.Comment{}).Create(&comment).Error
+		err = db.Mysql.Model(&model.Comments{}).Create(&comment).Error
 
 		if err != nil {
 			util.ReturnInternal(c)
 			return
 		}
-		result := db.Mysql.Model(&model.Comment{}).Where("commentator=?", uid).First(&comment)
+		result := db.Mysql.Model(&model.Comments{}).Where("commentator=?", uid).First(&comment)
 		if result.Error != nil || result.RecordNotFound() {
 			util.ReturnInternal(c)
 		}

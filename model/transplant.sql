@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 24/08/2021 23:06:45
+ Date: 04/09/2021 10:49:20
 */
 
 SET NAMES utf8mb4;
@@ -67,6 +67,7 @@ CREATE TABLE `messages`  (
   `mid` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `from` int UNSIGNED NOT NULL,
   `to` int UNSIGNED NOT NULL,
+  `text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`mid`) USING BTREE,
   UNIQUE INDEX `messages_mid_idx`(`mid`) USING BTREE,
   INDEX `from`(`from`) USING BTREE,
@@ -93,7 +94,7 @@ CREATE TABLE `products`  (
   UNIQUE INDEX `products_pid_idx`(`pid`) USING BTREE,
   INDEX `owner`(`owner`) USING BTREE,
   CONSTRAINT `products_ibfk_1` FOREIGN KEY (`owner`) REFERENCES `users` (`uid`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 35 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for users
@@ -113,6 +114,6 @@ CREATE TABLE `users`  (
   `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '默认地址',
   PRIMARY KEY (`uid`) USING BTREE,
   INDEX `uid`(`uid`, `username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 112 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -41,7 +41,7 @@ func LogonRequire(db model.DBGroup) func(c *gin.Context) {
 		}
 
 		//确保信息是可靠的
-		user := model.User{}
+		user := model.Users{}
 		result := db.Mysql.Where("uid=?", claim.Uid).First(&user)
 		if result.RecordNotFound() {
 			//仅当用户删除账号后，之前申请的jwt未失效前出现，少见，不用测试

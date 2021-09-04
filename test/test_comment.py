@@ -23,7 +23,7 @@ def test_comment_to_product():
 
     assert isinstance(corr["cid"], int)
     del corr["cid"]
-    assert corr == comment | {'commentator': 70, 'product': pid, 'response_to': 0, }
+    assert corr == comment | {'commentator': 70, 'product': pid, 'response_to': None, }
 
 
 def test_reply_to():
@@ -43,7 +43,7 @@ def test_reply_to():
 
 def test_get_product_comment():
     result = [
-        {'cid': 0, 'commentator': 70, 'product': 1, 'response_to': 0, 'text': ''},
+        {'cid': 0, 'commentator': 70, 'product': 1, 'response_to': None, 'text': None},
         {'cid': 14,
          'commentator': 70,
          'product': 1,

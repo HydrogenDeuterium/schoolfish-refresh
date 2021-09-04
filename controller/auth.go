@@ -60,7 +60,7 @@ func Auth(g *gin.RouterGroup, db model.DBGroup) {
 		//	ReturnError(c, "验证码无效或已过期！")
 		//	return
 		//}
-		user := &model.User{}
+		user := &model.Users{}
 		where := db.Mysql.Where("email=?", email)
 		//where := db.Mysql.Model(&model.User{}).Where("email=?", email)
 		db := where.First(user)

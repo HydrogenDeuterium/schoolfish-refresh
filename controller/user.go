@@ -15,7 +15,7 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnError(c, "提供邮箱！")
 			return
 		}
-		find := db.Mysql.Where("email = ?", email).First(&model.User{}).RecordNotFound()
+		find := db.Mysql.Where("email = ?", email).First(&model.Users{}).RecordNotFound()
 		if find == false {
 			util.ReturnError(c, "用户已注册!")
 			return
@@ -30,7 +30,7 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnInternal(c)
 			return
 		}
-		user := model.User{
+		user := model.Users{
 			Username: c.DefaultPostForm("username", ""),
 			Email:    email,
 			Hashed:   string(hashed),
@@ -49,7 +49,7 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnInternal(c)
 			return
 		}
-		user := model.User{}
+		user := model.Users{}
 		result := db.Mysql.Where("uid=?", uid).First(&user)
 		if result.Error != nil {
 			util.ReturnInternal(c)
@@ -67,7 +67,7 @@ func User(g *gin.RouterGroup, db model.DBGroup) {
 			return
 		}
 		userMap := c.PostFormMap("user")
-		user := model.User{
+		user := model.Users{
 			Username: userMap["username"],
 			Email:    userMap["email"],
 			Hashed:   userMap["hashed"],

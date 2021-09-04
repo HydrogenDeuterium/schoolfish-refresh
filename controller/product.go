@@ -22,9 +22,9 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 		}
 		pageSize := 10
 
-		var products []model.Product
+		var products []model.Products
 
-		result := db.Mysql.Model(model.Product{}).Limit(pageSize).Offset(page*pageSize - pageSize).Find(&products)
+		result := db.Mysql.Model(model.Products{}).Limit(pageSize).Offset(page*pageSize - pageSize).Find(&products)
 
 		if result.RecordNotFound() {
 			fmt.Println("你妈的为什么")
@@ -39,7 +39,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 	g.GET("/users/:uid", func(c *gin.Context) {
 		uid := c.Param("uid")
 
-		var user = model.User{}
+		var user = model.Users{}
 		result := db.Mysql.Where("uid=?", uid).First(&user)
 		if result.RecordNotFound() {
 			util.ReturnError(c, "用户不存在！")
@@ -49,7 +49,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnInternal(c)
 			return
 		}
-		var products []model.Product
+		var products []model.Products
 		result = db.Mysql.Where("owner=?", uid).Find(&products)
 		if result.Error != nil {
 			util.ReturnInternal(c)
@@ -60,7 +60,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 
 	g.GET("/:pid", func(c *gin.Context) {
 		pid := c.Param("pid")
-		var product model.Product
+		var product model.Products
 		result := db.Mysql.Where("pid=?", pid).First(&product)
 		if result.RecordNotFound() {
 			util.ReturnError(c, "货物不存在！")
@@ -80,7 +80,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnInternal(c)
 			return
 		}
-		var product model.Product
+		var product model.Products
 		//golang 不支持双引号 json
 		productJson := strings.Replace(c.PostForm("product"), "'", "\"", -1)
 		err := json.Unmarshal([]byte(productJson), &product)
@@ -108,7 +108,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 
 		pid := c.Param("pid")
 
-		var product model.Product
+		var product model.Products
 		//golang 不支持双引号 json
 		result := db.Mysql.Where("pid=?", pid).First(&product)
 		if result.RecordNotFound() {
@@ -125,7 +125,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 
 		query := db.Mysql.Where("pid=?", pid).Limit(1)
 		//fmt.Println(query.Value)
-		result = query.Model(&model.Product{}).Update(&product)
+		result = query.Model(&model.Products{}).Update(&product)
 		if result.Error != nil {
 			util.ReturnInternal(c)
 			return
@@ -143,7 +143,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 
 		pid := c.Param("pid")
 
-		var product model.Product
+		var product model.Products
 		//golang 不支持双引号 json
 		result := db.Mysql.Where("pid=?", pid).First(&product)
 		if result.RecordNotFound() {
@@ -155,7 +155,7 @@ func Product(g *gin.RouterGroup, db model.DBGroup) {
 			util.ReturnError(c, "没有所有权！")
 		}
 
-		result = db.Mysql.Model(&model.Product{}).Delete(&product)
+		result = db.Mysql.Model(&model.Products{}).Delete(&product)
 		if result.RowsAffected != 1 {
 			//我寻思一次应该只能删掉一个
 			result.Rollback()
