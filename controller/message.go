@@ -14,11 +14,16 @@ func Message(c *gin.RouterGroup, DB model.DBGroup) {
 
 	c.GET("", func(c *gin.Context) {
 		self, _ := c.Get("uid")
-		if self == "" {
-			util.ReturnError(c, "不正确的uid！")
+		var messages []model.Messages
+		db := DB.Mysql.Model(model.Messages{}).Limit(10)
+		query := db.Where("`from` =?", self).Or("`to`=?", self)
+
+		result := query.Debug().Find(&messages)
+		if result.Error != nil {
+			util.ReturnInternal(c)
 			return
 		}
-		util.ReturnGood(c, nil)
+		util.ReturnGood(c, messages)
 	})
 
 	c.GET("/:uid", func(c *gin.Context) {
@@ -32,7 +37,7 @@ func Message(c *gin.RouterGroup, DB model.DBGroup) {
 		var messages []model.Messages
 		db := DB.Mysql.Model(model.Messages{}).Limit(10)
 		users := []string{strconv.Itoa(int(self.(uint))), other}
-		query := db.Where("`from` in (?)", users).Or("`to` in (?)", users)
+		query := db.Where("`from` in (?)", users).Where("`to` in (?)", users).Order("mid")
 		result := query.Find(&messages)
 		if result.Error != nil {
 			util.ReturnInternal(c)
@@ -45,7 +50,7 @@ func Message(c *gin.RouterGroup, DB model.DBGroup) {
 		self, _ := c.Get("uid")
 		other := c.Param("uid")
 		uid, err := strconv.Atoi(other)
-		if err != nil || uid <= 0 {
+		if err != nil || uid <= 0 || uint(uid) == self {
 			util.ReturnError(c, "不正确的uid！")
 			return
 		}
@@ -60,7 +65,6 @@ func Message(c *gin.RouterGroup, DB model.DBGroup) {
 			util.ReturnInternal(c)
 			return
 		}
-		util.ReturnGood(c, nil)
+		util.ReturnGood(c, message)
 	})
-
 }

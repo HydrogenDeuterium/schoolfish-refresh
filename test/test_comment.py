@@ -1,7 +1,7 @@
 import httpx
 
 from test import fake, url
-from test.util import token_verify, _200, _400
+from test.util import token_verify, success, error
 
 c = httpx.Client(base_url=f"{url}/comments", timeout=1000)
 
@@ -13,13 +13,13 @@ def random_comment():
 
 def test_comment_to_product():
     token = token_verify(c.post, "/products/str")
-    err0 = _400(c.post("/products/str", headers=token))
-    err1 = _400(c.post("/products/0", headers=token))
+    err0 = error(c.post("/products/str", headers=token))
+    err1 = error(c.post("/products/0", headers=token))
     assert err0 == err1 == "pid格式不正确！"
 
     comment = random_comment()
     pid = 2
-    corr = _200(c.post(f"/products/{pid}", headers=token, data=comment))
+    corr = success(c.post(f"/products/{pid}", headers=token, data=comment))
 
     assert isinstance(corr["cid"], int)
     del corr["cid"]
@@ -28,13 +28,13 @@ def test_comment_to_product():
 
 def test_reply_to():
     token = token_verify(c.post, "/13/response")
-    err0 = _400(c.post("/str/response", headers=token))
-    err1 = _400(c.post("/0/response", headers=token))
+    err0 = error(c.post("/str/response", headers=token))
+    err1 = error(c.post("/0/response", headers=token))
     assert err0 == err1 == "cid格式不正确！"
 
     comment = random_comment()
     pid = 13
-    corr = _200(c.post(f"/{pid}/response", headers=token, data=comment))
+    corr = success(c.post(f"/{pid}/response", headers=token, data=comment))
 
     assert isinstance(corr["cid"], int)
     del corr["cid"]
@@ -90,36 +90,36 @@ def test_get_product_comment():
          'response_to': 13,
          'text': '这么的人只要需要作品什么搜索.的话实现一下安全谢谢.图片东西希望看到在线然后.'}
     ]
-    err = _400(c.get("/products/str"))
+    err = error(c.get("/products/str"))
     assert err == "pid格式不正确！"
-    corr = _200(c.get("/products/1"))
+    corr = success(c.get("/products/1"))
     assert corr == result
 
 
 def test_get_responses():
     response = [{'cid': 24, 'commentator': 71, 'product': 3,
                  'response_to': 12, 'text': '我回复了评论#12.'}]
-    err = _400(c.get("/str/response"))
+    err = error(c.get("/str/response"))
     assert err == "pid格式不正确！"
-    corr = _200(c.get("/12/response"))
+    corr = success(c.get("/12/response"))
     assert corr == response
 
 
 def test_del_comment():
     token = token_verify(c.delete, "/str")
-    err0 = _400(c.delete("/str", headers=token))
+    err0 = error(c.delete("/str", headers=token))
     assert err0 == "cid格式不正确！"
-    err1 = _400(c.delete("/12", headers=token))
+    err1 = error(c.delete("/12", headers=token))
     assert err1 == "无权操作！"
-    result = _200(c.post("/products/4", data=random_comment(), headers=token))
-    corr = _200(c.delete(f"/{result['cid']}", headers=token))
+    result = success(c.post("/products/4", data=random_comment(), headers=token))
+    corr = success(c.delete(f"/{result['cid']}", headers=token))
     assert corr == result
 
 
 def test_get_comment_by_id():
-    err = _400(c.get("/str"))
+    err = error(c.get("/str"))
     assert err == "cid格式不正确！"
-    corr = _200(c.get("/13"))
+    corr = success(c.get("/13"))
     assert corr == {
         'cid': 13,
         'commentator': 70,
@@ -130,5 +130,5 @@ def test_get_comment_by_id():
 
 def test_comment_update():
     token = token_verify(c.put, "/0")
-    corr = _200(c.put("/0", headers=token))
+    corr = success(c.put("/0", headers=token))
     assert corr == "暂未实现！"

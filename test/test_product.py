@@ -1,5 +1,5 @@
 from test import c, fake
-from test.util import _200, _400, token_verify
+from test.util import success, error, token_verify
 
 
 def test_product_get_by_page():
@@ -91,23 +91,23 @@ def test_product_get_by_page():
             'pid': 11,
             'price': '59.70',
             'title': '测试商品9ca375ae2ed1484b424f'}]
-    co = _200(c.get("/products", params={"page": 1}))
+    co = success(c.get("/products", params={"page": 1}))
     assert co == result
 
 
 def test_view_user_product():
-    err0 = _400(c.get("/products/users/-1"))
+    err0 = error(c.get("/products/users/-1"))
     assert err0 == "用户不存在！"
-    corr = _200(c.get("/products/users/69"))
+    corr = success(c.get("/products/users/69"))
     assert corr == [
         {'pid': 1, 'title': '测试商品', 'info': '1', 'price': '1.20', 'owner': 69, 'location': '南京'}
     ]
 
 
 def test_view_a_product():
-    err0 = _400(c.get("/products/-1"))
+    err0 = error(c.get("/products/-1"))
     assert err0 == "货物不存在！"
-    corr = _200(c.get("/products/1"))
+    corr = success(c.get("/products/1"))
     assert corr == {'info': '1',
                     'pid': 1,
                     'location': '南京',
@@ -129,7 +129,7 @@ def random_product(s: str):
 def test_new_product():
     product = random_product("测试新增商品")
     token = token_verify(c.post, "/products")
-    corr = _200(c.post("/products", headers=token, data={"product": product}))
+    corr = success(c.post("/products", headers=token, data={"product": product}))
     del corr["owner"]
     del corr["pid"]
     assert corr == product
@@ -139,10 +139,10 @@ def test_update_product():
     product = random_product("测试修改商品")
     token = token_verify(c.put, "/products/20")
 
-    err = _400(c.put("/products/8", headers=token, data={"product": product}))
+    err = error(c.put("/products/8", headers=token, data={"product": product}))
     assert err == "商品不存在！"
 
-    corr = _200(c.put("/products/21", headers=token, data={"product": product}))
+    corr = success(c.put("/products/21", headers=token, data={"product": product}))
     del corr["owner"]
     del corr["pid"]
     assert corr == product
@@ -152,9 +152,9 @@ def test_delete_product():
     product = random_product('测试删除商品')
     token = token_verify(c.delete, "/products/2")
 
-    to_del = _200(c.post("/products", headers=token, data={"product": product}))
+    to_del = success(c.post("/products", headers=token, data={"product": product}))
     pid = to_del["pid"]
-    corr = _200(c.delete(f"/products/{pid}", headers=token))
+    corr = success(c.delete(f"/products/{pid}", headers=token))
     assert float(corr["price"]) == float(product["price"])
     del corr["price"], product["price"]
     assert corr == product | {"owner": 70, "pid": pid}

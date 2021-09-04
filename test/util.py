@@ -11,7 +11,7 @@ data = 'data'
 msg = 'msg'
 
 
-def _200(r: httpx.Response) -> Union[dict, list, str]:
+def success(r: httpx.Response) -> Union[dict, list, str]:
     if r.status_code==404:
         raise AssertionError("Not Fount,maybe caused by error url,check it.")
     assert r.status_code == 200
@@ -23,7 +23,7 @@ def _200(r: httpx.Response) -> Union[dict, list, str]:
     return j[data]
 
 
-def _400(r: httpx.Response) -> Union[dict, list]:
+def error(r: httpx.Response) -> Union[dict, list]:
     if r.status_code != 200:
         raise AssertionError(f"{r.content=}\t maybe a real internal error happened.")
     assert r.content != b''
@@ -62,21 +62,24 @@ def random_password():
 
 
 def get_token():
-    return _200(c.post("/auth", data={"email": "example@foo.bar", "password": "123456"}))
+    return success(c.post("/auth", data={"email": "example@foo.bar", "password": "123456"}))
 
 
 methods = Union[c.get, c.post, c.put, c.delete]
 
 
 def token_verify(method: methods, url: str):
-    err0 = _400(method(url))
+    """
+    生成token的用户uid为70
+    """
+    err0 = error(method(url))
     assert err0 == '请求头中auth为空'
 
-    err1 = _400(method(url, headers={"Authorization": "Bearer 123456"}))
+    err1 = error(method(url, headers={"Authorization": "Bearer 123456"}))
     assert err1 == "无效的Token"
 
     token: str = get_token()
-    err2 = _400(method(url, headers={"Authorization": token}))
+    err2 = error(method(url, headers={"Authorization": token}))
     assert err2 == "请求头中auth格式有误"
 
     jwt = "Bearer " + token
