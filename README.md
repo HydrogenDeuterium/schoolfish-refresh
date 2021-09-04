@@ -134,7 +134,7 @@ Content-Type: application/json;charset=UTF-8
 ### 私聊相关
 
 - /messages/
-    - GET: #获取往来用户
+    - [-]GET: #获取往来用户
 - /messages/:uid
     - [-]GET: #获取与 uid 的所有往来消息
     - [-]POST: #向 uid发送消息
