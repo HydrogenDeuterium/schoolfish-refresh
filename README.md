@@ -55,9 +55,9 @@ REST是 Representational State Transfer(表述性状态转移)的首字母缩写
 Content-Type: application/json;charset=UTF-8
 
 {
-    code: int
-    data: object|array|null
-    msg: string
+    "code": "int"
+    "data": "object|array|null"
+    "msg": "string"
 }
 ```
 

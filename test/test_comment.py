@@ -12,7 +12,7 @@ def random_comment():
 
 
 def test_comment_to_product():
-    token = token_verify(c.post, "/products/str")
+    token = token_verify("/products/str")
     err0 = error(c.post("/products/str", headers=token))
     err1 = error(c.post("/products/0", headers=token))
     assert err0 == err1 == "pid格式不正确！"
@@ -27,7 +27,7 @@ def test_comment_to_product():
 
 
 def test_reply_to():
-    token = token_verify(c.post, "/13/response")
+    token = token_verify("/13/response")
     err0 = error(c.post("/str/response", headers=token))
     err1 = error(c.post("/0/response", headers=token))
     assert err0 == err1 == "cid格式不正确！"
@@ -106,7 +106,7 @@ def test_get_responses():
 
 
 def test_del_comment():
-    token = token_verify(c.delete, "/str")
+    token = token_verify("/str")
     err0 = error(c.delete("/str", headers=token))
     assert err0 == "cid格式不正确！"
     err1 = error(c.delete("/12", headers=token))
@@ -129,6 +129,6 @@ def test_get_comment_by_id():
 
 
 def test_comment_update():
-    token = token_verify(c.put, "/0")
+    token = token_verify("/0")
     corr = success(c.put("/0", headers=token))
     assert corr == "暂未实现！"

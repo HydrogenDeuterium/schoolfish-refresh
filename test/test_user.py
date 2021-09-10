@@ -1,5 +1,5 @@
 from test import c, fake
-from test.util import error, random_password, success, token_verify
+from test.util import error, success, token_verify
 
 
 def random_user():
@@ -9,7 +9,7 @@ def random_user():
         "password": fake.password(special_chars=False),
         "avatar": fake.image_url(),
         "info": fake.sentence(),
-        "profile": "\n".join(fake.paragraph()),
+        "profile": "\n".join(fake.paragraphs()),
         "location": fake.address(),
     }
     return ret
@@ -24,7 +24,7 @@ def test_register():
     re1 = error(c.post("/users", params={"code": "0"}, data=err1))
     assert re1 == "用户已注册!"
 
-    err2 = {"username": "1", "email": random_password(), "avatar": "", "info": "",
+    err2 = {"username": "1", "email": fake.password(special_chars=False), "avatar": "", "info": "",
             "profile": "", "location": ""}
     re2 = error(c.post("/users", params={"code": "0"}, data=err2))
     assert re2 == "提供密码！"
@@ -38,7 +38,7 @@ def test_register():
 
 
 def test_userinfo():
-    token = token_verify(c.get, "/users", )
+    token = token_verify("/users", )
     corr = success(c.get("/users", headers=token))
     assert corr == {
         'uid': 70,

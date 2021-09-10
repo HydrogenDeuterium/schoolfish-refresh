@@ -1,10 +1,8 @@
-import random
 from typing import Union
 
 import httpx
 
 from test import c
-
 
 code = 'code'
 data = 'data'
@@ -12,7 +10,7 @@ msg = 'msg'
 
 
 def success(r: httpx.Response) -> Union[dict, list, str]:
-    if r.status_code==404:
+    if r.status_code == 404:
         raise AssertionError("Not Fount,maybe caused by error url,check it.")
     assert r.status_code == 200
     assert r.content != b''
@@ -34,8 +32,8 @@ def error(r: httpx.Response) -> Union[dict, list]:
     return j[msg]
 
 
-def random_hex_str(n: int):
-    return "".join(random.choice("0123456789abcdef") for i in range(n))
+# def random_hex_str(n: int):
+#     return "".join(random.choice("0123456789abcdef") for i in range(n))
 
 
 # def random_email():
@@ -53,8 +51,8 @@ def random_hex_str(n: int):
 #     return random_hex_str(8)
 
 
-def random_password():
-    return random_hex_str(8)
+# def random_password():
+#     return random_hex_str(8)
 
 
 # def random_price():
@@ -68,10 +66,11 @@ def get_token():
 methods = Union[c.get, c.post, c.put, c.delete]
 
 
-def token_verify(method: methods, url: str):
+def token_verify(url: str):
     """
     生成token的用户uid为70
     """
+    method = c.head
     err0 = error(method(url))
     assert err0 == '请求头中auth为空'
 

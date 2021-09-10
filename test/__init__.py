@@ -6,5 +6,5 @@ from faker import Faker
 fake: Faker = Faker(locale="zh_CN")
 
 url = os.getenv('url', default='http://127.0.0.1:8080')
-print(f"{url=}")
+# print(f"{url=}")
 c = httpx.Client(base_url=url)
